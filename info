@@ -1,0 +1,32 @@
+ouvrir le server :
+
+nc 127.0.0.1 4242
+
+----------------------------------------------
+
+pour la creation d un socket :
+
+socket(AF_INET, SOCK_STREAM, 0)
+
+AF_INET = famille d adresse, Internet Protocol version 4
+//AF_INET6 = IPV6
+SOCK_STREAM = definit le type de socket, TCP
+//SOCK_DGRAM = 	UDP
+0 = parametre du protocole
+
+----------------------------------------------
+
+pour configurer la connexion server :
+
+serv_addr.sin_family = AF_INET;
+serv_addr.sin_port = htons(port);
+
+sin_family = Definir la famille d adresse, IPV4 ou IPV6
+sin_port = Definir le port a utilise
+htons() = converti le format du port
+
+inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)
+
+inet_pton() = permet de convertir l adresse IP en format binaire
+
+
