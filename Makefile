@@ -12,16 +12,29 @@
 
 NAME	= ircserv
 FLAG	= -Wall -Wextra -Werror -std=c++98
-SRC		= main.cpp 
+
+SRCDIR	= src
+OBJDIR	= obj
+
+SRC		= $(shell find $(SRCDIR) -name '*.cpp')
+OBJ		= $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC))
 
 all: $(NAME)
 
-$(NAME):
-			c++ $(FLAG) $(SRC) -o $(NAME)
+$(NAME): $(OBJ)
+	@c++ $(FLAG) -o $(NAME) $(OBJ)
 
-fclean:
-			rm -rf $(NAME)
+$(OBJDIR)/%.o : $(SRCDIR)/%.cpp
+	@mkdir -p $(dir $@)
+	@c++ $(FLAG) -c $< -o $@
+
+clean:
+	@rm -rf $(OBJDIR)
+
+
+fclean: clean
+	@rm -rf $(NAME)
 
 re: fclean all
 
-.PHONY: all fclean re
+.PHONY: all clean fclean re
