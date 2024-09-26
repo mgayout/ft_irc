@@ -64,6 +64,7 @@ void	Server::waitingClients()
 		{
 			std::cout << "[Server] new client has been add" << std::endl;
 			this->_clients[_nbClient] = new Client(socket);
+			this->authentication();
 			this->_nbClient++;
 		}
 	}

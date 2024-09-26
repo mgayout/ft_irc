@@ -13,11 +13,13 @@
 #ifndef FT_IRC_HPP
 # define FT_IRC_HPP
 
-#include <iostream>
-#include <algorithm>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <arpa/inet.h>
+# include <iostream>
+# include <algorithm>
+# include <sys/socket.h>
+# include <unistd.h>
+# include <arpa/inet.h>
+# include <unistd.h>
+# include <fcntl.h>
 
 class	Client
 {
@@ -27,9 +29,16 @@ class	Client
 			Client&	operator=(const Client& other);
 			~Client();
 
+			void		setNickname(const std::string nick);
+			void		setUsername(const std::string user);
+			std::string	getNickname();
+			std::string	getUsername();
+			int			getSocket();
+
 	private:
 			int			_socket;
-			std::string	_name;
+			std::string	_nickname;
+			std::string	_username;
 			bool		_op;
 };
 
@@ -42,6 +51,15 @@ class	Server
 			void	startServer();
 			void	waitingClients();
 			void	closeServer();
+
+			void	authentication();
+			std::string	findNickname(char *buffer);
+			std::string	findUsername(char *buffer);
+			void	setNickClient(std::string nick);
+			void	setUserClient(std::string user);
+
+			int		nicknameUsed(std::string nick);
+			int		usernameUsed(std::string user);
 
 	private:
 			Client*				_clients[1024];
