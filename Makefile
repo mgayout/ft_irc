@@ -15,16 +15,18 @@ FLAG	= -Wall -Wextra -Werror -std=c++98
 
 SRCDIR	= src
 OBJDIR	= obj
+HEADIR	= include
 
 SRC		= $(shell find $(SRCDIR) -name '*.cpp')
 OBJ		= $(patsubst $(SRCDIR)/%.cpp, $(OBJDIR)/%.o, $(SRC))
+HEADER	= $(shell find $(HEADIR) -name '*.hpp')
 
 all: $(NAME)
 
-$(NAME): $(OBJ)
+$(NAME): $(OBJ) $(HEADER)
 	@c++ $(FLAG) -o $(NAME) $(OBJ)
 
-$(OBJDIR)/%.o : $(SRCDIR)/%.cpp
+$(OBJDIR)/%.o : $(SRCDIR)/%.cpp $(HEADER)
 	@mkdir -p $(dir $@)
 	@c++ $(FLAG) -c $< -o $@
 

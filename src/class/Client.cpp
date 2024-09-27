@@ -10,23 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/ft_irc.hpp"
+#include "../../include/Client.hpp"
 
-Client::Client() : _socket(0), _op(false)
+Client::Client(int socket)
 {
-
-}
-
-Client::Client(int socket) : _socket(socket), _op(false)
-{
-
-}
-
-Client& Client::operator=(const Client& other)
-{
-	if (other._socket)
-		this->_socket = other._socket;
-	return *this;
+	this->_socket = socket;
+	this->_nickname = "";
+	this->_username = "";
+	this->_hexchat = false;
 }
 
 Client::~Client()
@@ -42,6 +33,11 @@ void	Client::setNickname(const std::string nick)
 void	Client::setUsername(const std::string user)
 {
 	this->_username = user;
+}
+
+void	Client::setAuthenticated(bool b)
+{
+	this->_authenticated = b;
 }
 
 std::string	Client::getNickname()

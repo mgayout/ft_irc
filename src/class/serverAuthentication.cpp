@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/ft_irc.hpp"
+#include "../../include/Server.hpp"
 
-void	Server::authentication()
+/*void	Server::authentication()
 {	
 	std::string	str, nick = "", user = "";
 	char	buffer[1024] = {0};
@@ -174,4 +174,4 @@ int	Server::usernameUsed(std::string user)
 			return 1;
 	}
 	return 0;
-}
+}*/
