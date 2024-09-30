@@ -41,22 +41,25 @@ class	Server
 			void	clientRequest(unsigned int idClient);
 			void	parseCommand(int clientFd, std::string line);
 
+			void		join(std::string arg, int clientFd);
+			void		part(std::string arg, int clientFd);
+			void		kick(std::string arg, int clientFd);
+			void		invite(std::string arg, int clientFd);
+			void		topic(std::string arg, int clientFd);
+			void		mode(std::string arg, int clientFd);
+			void		cap(int clientFd);
 			void		pass(std::string arg, int clientFd);
 			void		nick(std::string arg, int clientFd);
 			void		user(std::string arg, int clientFd);
-			void		oper(std::string arg, int clientFd);
-			void		mode(std::string arg, int clientFd);
+			void		op(std::string arg, int clientFd);
+			void		deop(std::string arg, int clientFd);
+			void		msg(std::string arg, int clientFd);
 			void		quit(std::string arg, int clientFd);
-			void		join(std::string arg, int clientFd);
-			void		part(std::string arg, int clientFd);
-			void		topic(std::string arg, int clientFd);
-			void		kick(std::string arg, int clientFd);
-			void		privmsg(std::string arg, int clientFd);
-			void		notice(std::string arg, int clientFd);
 			void		sendfile(std::string arg, int clientFd);
 			void		getfile(std::string arg, int clientFd);
 			void		bot(std::string arg, int clientFd);
-			void		cap(int clientFd);
+			
+			void		sendMessage(int clienFd, std::string msg);
 
 			/*void	authentication();
 			std::string	findNickname(char *buffer);
@@ -66,6 +69,12 @@ class	Server
 
 			int		nicknameUsed(std::string nick);
 			int		usernameUsed(std::string user);*/
+
+			class sendException : public std::exception
+			{
+			public:
+				virtual const char *what() const throw();
+			};
 
 	private:
 			unsigned int			_port;
@@ -77,6 +86,7 @@ class	Server
 			int						_socket;
 };
 
-void	sendMessage(int fd, std::string msg);
+void	sendMessage(int clientFd, std::string msg);
+
 
 #endif

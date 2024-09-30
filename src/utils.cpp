@@ -12,20 +12,29 @@
 
 #include "../include/Server.hpp"
 
-/*std::string	currentDateTime()
+std::string	currentDateTime()
 {
 	time_t		now = time(0);
 	struct tm	timestruct;
-	char		*buffer[1024];
+	char		buffer[1024];
 	timestruct = *localtime(&now);
 
-	strftime(buffer, sizeof(buffer), "%Y-%m-%d.%X", &timestruct);
+	strftime(buffer, sizeof(buffer), "%X", &timestruct);
 
 	return buffer;
-}*/
+}
 
-void	sendMessage(int fd, std::string msg)
+void	Server::sendMessage(int clienFd, std::string msg)
 {
-	if (send(fd, msg.c_str(), msg.size(), 0) == -1)
-		return ;
+	std::string	newMsg = "[" + currentDateTime() + "] :" + msg;
+	if (!this->_clients[clienFd]->getHexchat())
+	{
+		if (send(clienFd, newMsg.c_str(), newMsg.size(), 0) == -1)
+			throw (Server::sendException());
+	}
+	else
+	{
+		if (send(clienFd, msg.c_str(), msg.size(), 0) == -1)
+			throw (Server::sendException());	
+	}
 }

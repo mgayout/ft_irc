@@ -12,6 +12,60 @@
 
 #include "../../include/Server.hpp"
 
+void	Server::join(std::string arg, int clientFd)
+{
+	std::string	msg = "New channel has been created : " + arg + "\n";
+	
+	std::cout << "New channel has been created : " << arg << "\n";
+	sendMessage(clientFd, msg);
+}
+
+void	Server::part(std::string arg, int clientFd)
+{
+	std::string	msg = "A client left channel \"" + arg + "\"\n";
+	
+	std::cout << "A client left channel \"" << arg << "\"\n";
+	sendMessage(clientFd, msg);
+}
+
+void	Server::kick(std::string arg, int clientFd)
+{
+	std::string	msg = "A client was kicked out from channel \"" + arg + "\"\n";
+	
+	std::cout << "A client was kicked out from channel \"" << arg << "\"\n";
+	sendMessage(clientFd, msg);
+}
+
+void	Server::invite(std::string arg, int clientFd)
+{
+	std::string	msg = "A client invited someone on channel \"" + arg + "\"\n";
+	
+	std::cout << "A client was kicked out from channel \"" << arg << "\"\n";
+	sendMessage(clientFd, msg);
+}
+
+void	Server::topic(std::string arg, int clientFd)
+{
+	if (arg != this->_password)
+		std::cout << "bad mdp" << std::endl;
+	else
+		this->_clients[clientFd]->setAuthenticated(true);
+}
+
+void	Server::mode(std::string arg, int clientFd)
+{
+	if (arg != this->_password)
+		std::cout << "bad mdp" << std::endl;
+	else
+		this->_clients[clientFd]->setAuthenticated(true);
+}
+
+void	Server::cap(int clientFd)
+{
+	this->_clients[clientFd]->setHexchat(true);
+	std::cout << "hexchat" << std::endl;
+}
+
 void	Server::pass(std::string arg, int clientFd)
 {
 	if (arg != this->_password)
@@ -36,7 +90,7 @@ void	Server::user(std::string arg, int clientFd)
 		this->_clients[clientFd]->setAuthenticated(true);
 }
 
-void	Server::oper(std::string arg, int clientFd)
+void	Server::op(std::string arg, int clientFd)
 {
 	if (arg != this->_password)
 		std::cout << "bad mdp" << std::endl;
@@ -44,7 +98,15 @@ void	Server::oper(std::string arg, int clientFd)
 		this->_clients[clientFd]->setAuthenticated(true);
 }
 
-void	Server::mode(std::string arg, int clientFd)
+void	Server::deop(std::string arg, int clientFd)
+{
+	if (arg != this->_password)
+		std::cout << "bad mdp" << std::endl;
+	else
+		this->_clients[clientFd]->setAuthenticated(true);
+}
+
+void	Server::msg(std::string arg, int clientFd)
 {
 	if (arg != this->_password)
 		std::cout << "bad mdp" << std::endl;
@@ -53,54 +115,6 @@ void	Server::mode(std::string arg, int clientFd)
 }
 
 void	Server::quit(std::string arg, int clientFd)
-{
-	if (arg != this->_password)
-		std::cout << "bad mdp" << std::endl;
-	else
-		this->_clients[clientFd]->setAuthenticated(true);
-}
-
-void	Server::join(std::string arg, int clientFd)
-{
-	if (arg != this->_password)
-		std::cout << "bad mdp" << std::endl;
-	else
-		this->_clients[clientFd]->setAuthenticated(true);
-}
-
-void	Server::part(std::string arg, int clientFd)
-{
-	if (arg != this->_password)
-		std::cout << "bad mdp" << std::endl;
-	else
-		this->_clients[clientFd]->setAuthenticated(true);
-}
-
-void	Server::topic(std::string arg, int clientFd)
-{
-	if (arg != this->_password)
-		std::cout << "bad mdp" << std::endl;
-	else
-		this->_clients[clientFd]->setAuthenticated(true);
-}
-
-void	Server::kick(std::string arg, int clientFd)
-{
-	if (arg != this->_password)
-		std::cout << "bad mdp" << std::endl;
-	else
-		this->_clients[clientFd]->setAuthenticated(true);
-}
-
-void	Server::privmsg(std::string arg, int clientFd)
-{
-	if (arg != this->_password)
-		std::cout << "bad mdp" << std::endl;
-	else
-		this->_clients[clientFd]->setAuthenticated(true);
-}
-
-void	Server::notice(std::string arg, int clientFd)
 {
 	if (arg != this->_password)
 		std::cout << "bad mdp" << std::endl;
@@ -130,10 +144,4 @@ void	Server::bot(std::string arg, int clientFd)
 		std::cout << "bad mdp" << std::endl;
 	else
 		this->_clients[clientFd]->setAuthenticated(true);
-}
-
-void	Server::cap(int clientFd)
-{
-	this->_clients[clientFd]->setHexchat(true);
-	std::cout << "hexchat" << std::endl;
 }

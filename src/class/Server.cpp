@@ -101,8 +101,7 @@ void	Server::addClient()
 		this->_pfds[this->_nbClient].events = POLLIN;
 		this->_clients.insert(std::pair<int, Client *>(clientFd, new Client(clientFd)));
 		std::cout << "[Server] New client has been add" << std::endl;
-		sendMessage(this->_pfds[this->_nbClient].fd, ":* 667 * :Bonjour\n");
-		sendMessage(this->_pfds[this->_nbClient].fd, "Bonjour\n");
+		sendMessage(this->_pfds[this->_nbClient].fd, "Welcome to ft_irc\n");
 		this->_nbClient++;
 	}
 }
@@ -134,7 +133,7 @@ void	Server::clientRequest(unsigned int idClient)
 
 void	Server::parseCommand(int clientFd, std::string line)
 {
-	std::string	commands[16] = {"PASS", "NICK", "USER", "OPER", "MODE", "QUIT", "JOIN", "PART", "TOPIC", "KICK", "PRIVMSG", "NOTICE", "SENDFILE", "GETFILE", "BOT", "CAP"};
+	std::string	commands[17] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "OP", "DEOP", "MSG", "QUIT", "SENDFILE", "GETFILE", "BOT"};
 	std::string	command, arg;
 	int			i = -1;
 	int			space;
@@ -142,61 +141,64 @@ void	Server::parseCommand(int clientFd, std::string line)
 	space = line.find(' ');
 	command = line.substr(0, space);
 	arg = line.substr(space + 1, line.size() - (space + 1));
-	while (++i < 17)
+	while (++i < 18)
 		if (command == commands[i])
 			break ;
 	switch (i)
 	{
 	case 0:
-			this->pass(arg, clientFd);
-			break;
-	case 1:
-			this->nick(arg, clientFd);
-			break;
-	case 2:
-			this->user(arg, clientFd);
-			break;
-	case 3:
-			this->oper(arg, clientFd);
-			break;
-	case 4:
-			this->mode(arg, clientFd);
-			break;
-	case 5:
-			this->quit(arg, clientFd);
-			break;
-	case 6:
 			this->join(arg, clientFd);
 			break;
-	case 7:
+	case 1:
 			this->part(arg, clientFd);
 			break;
-	case 8:
-			this->topic(arg, clientFd);
-			break;
-	case 9:
+	case 2:
 			this->kick(arg, clientFd);
 			break;
-	case 10:
-			this->privmsg(arg, clientFd);
+	case 3:
+			this->invite(arg, clientFd);
 			break;
-	case 11:
-			this->notice(arg, clientFd);
+	case 4:
+			this->topic(arg, clientFd);
 			break;
-	case 12:
-			this->sendfile(arg, clientFd);
+	case 5:
+			this->mode(arg, clientFd);
 			break;
-	case 13:
-			this->getfile(arg, clientFd);
-			break;
-	case 14:
-			this->bot(arg, clientFd);
-			break;
-	case 15:
+	case 6:
 			this->cap(clientFd);
 			break;
+	case 7:
+			this->pass(arg, clientFd);
+			break;
+	case 8:
+			this->nick(arg, clientFd);
+			break;
+	case 9:
+			this->user(arg, clientFd);
+			break;
+	case 10:
+			this->op(arg, clientFd);
+			break;
+	case 11:
+			this->deop(arg, clientFd);
+			break;
+	case 12:
+			this->msg(arg, clientFd);
+			break;
+	case 13:
+			this->quit(arg, clientFd);
+			break;
+	case 14:
+			this->sendfile(arg, clientFd);
+			break;
+	case 15:
+			this->getfile(arg, clientFd);
+			break;
+	case 16:
+			this->bot(arg, clientFd);
+			break;
 	default:
-			sendMessage(clientFd, "No channel joined. Try /join #<channel>\n");
+			//sendMessage(clientFd, "No channel joined. Try /join #<channel>\n");
 			break;
 	}
 }
