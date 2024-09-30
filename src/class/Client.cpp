@@ -40,6 +40,11 @@ void	Client::setAuthenticated(bool b)
 	this->_authenticated = b;
 }
 
+void	Client::setHexchat(bool b)
+{
+	this->_hexchat = b;
+}
+
 std::string	Client::getNickname()
 {
 	return this->_nickname;
@@ -53,4 +58,9 @@ std::string	Client::getUsername()
 int	Client::getSocket()
 {
 	return this->_socket;
+}
+
+bool	Client::getHexchat()
+{
+	return this->_hexchat;
 }

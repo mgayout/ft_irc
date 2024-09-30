@@ -24,9 +24,11 @@ class	Client
 			void		setNickname(const std::string nick);
 			void		setUsername(const std::string user);
 			void		setAuthenticated(bool b);
+			void		setHexchat(bool b);
 			std::string	getNickname();
 			std::string	getUsername();
 			int			getSocket();
+			bool		getHexchat();
 
 	private:
 			int			_socket;

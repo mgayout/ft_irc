@@ -56,6 +56,7 @@ class	Server
 			void		sendfile(std::string arg, int clientFd);
 			void		getfile(std::string arg, int clientFd);
 			void		bot(std::string arg, int clientFd);
+			void		cap(int clientFd);
 
 			/*void	authentication();
 			std::string	findNickname(char *buffer);

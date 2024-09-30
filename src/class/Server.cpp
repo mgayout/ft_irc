@@ -102,6 +102,7 @@ void	Server::addClient()
 		this->_clients.insert(std::pair<int, Client *>(clientFd, new Client(clientFd)));
 		std::cout << "[Server] New client has been add" << std::endl;
 		sendMessage(this->_pfds[this->_nbClient].fd, ":* 667 * :Bonjour\n");
+		sendMessage(this->_pfds[this->_nbClient].fd, "Bonjour\n");
 		this->_nbClient++;
 	}
 }
@@ -123,7 +124,7 @@ void	Server::clientRequest(unsigned int idClient)
 		while (lines)
 		{
 			end = msg.find('\n');
-			line = msg.substr(0, end - 1);
+			line = msg.substr(0, end);
 			this->parseCommand(clientFd, line);
 			msg = msg.substr(end + 1, msg.size() - (end + 1));
 			lines--;
@@ -133,15 +134,15 @@ void	Server::clientRequest(unsigned int idClient)
 
 void	Server::parseCommand(int clientFd, std::string line)
 {
-	std::string	commands[15] = {"PASS", "NICK", "USER", "OPER", "MODE", "QUIT", "JOIN", "PART", "TOPIC", "KICK", "PRIVMSG", "NOTICE", "SENDFILE", "GETFILE", "BOT"};
+	std::string	commands[16] = {"PASS", "NICK", "USER", "OPER", "MODE", "QUIT", "JOIN", "PART", "TOPIC", "KICK", "PRIVMSG", "NOTICE", "SENDFILE", "GETFILE", "BOT", "CAP"};
 	std::string	command, arg;
 	int			i = -1;
 	int			space;
 
 	space = line.find(' ');
-	command = line.substr(0, space - 1);
+	command = line.substr(0, space);
 	arg = line.substr(space + 1, line.size() - (space + 1));
-	while (++i < 16)
+	while (++i < 17)
 		if (command == commands[i])
 			break ;
 	switch (i)
@@ -191,8 +192,11 @@ void	Server::parseCommand(int clientFd, std::string line)
 	case 14:
 			this->bot(arg, clientFd);
 			break;
+	case 15:
+			this->cap(clientFd);
+			break;
 	default:
-			sendMessage(clientFd, ":* 667 * :No channel joined. Try /join #<channel>\n");
+			sendMessage(clientFd, "No channel joined. Try /join #<channel>\n");
 			break;
 	}
 }

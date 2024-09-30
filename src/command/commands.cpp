@@ -131,3 +131,9 @@ void	Server::bot(std::string arg, int clientFd)
 	else
 		this->_clients[clientFd]->setAuthenticated(true);
 }
+
+void	Server::cap(int clientFd)
+{
+	this->_clients[clientFd]->setHexchat(true);
+	std::cout << "hexchat" << std::endl;
+}
