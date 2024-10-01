@@ -26,7 +26,7 @@ std::string	currentDateTime()
 
 void	Server::sendMessage(int clienFd, std::string msg)
 {
-	std::string	newMsg = "[" + currentDateTime() + "] :" + msg;
+	std::string	newMsg = "[" + currentDateTime() + "] : " + msg;
 	if (!this->_clients[clienFd]->getHexchat())
 	{
 		if (send(clienFd, newMsg.c_str(), newMsg.size(), 0) == -1)

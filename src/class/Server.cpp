@@ -138,9 +138,13 @@ void	Server::parseCommand(int clientFd, std::string line)
 	int			i = -1;
 	int			space;
 
-	space = line.find(' ');
-	command = line.substr(0, space);
-	arg = line.substr(space + 1, line.size() - (space + 1));
+	if ((space = line.find(' ')) > 0)
+	{
+		command = line.substr(0, space);
+		arg = line.substr(space + 1, line.size() - (space + 1));
+	}
+	else
+		command = line;
 	while (++i < 18)
 		if (command == commands[i])
 			break ;

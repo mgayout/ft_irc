@@ -65,10 +65,10 @@ class	Server
 			std::string	findNickname(char *buffer);
 			std::string	findUsername(char *buffer);
 			void	setNickClient(std::string nick);
-			void	setUserClient(std::string user);
+			void	setUserClient(std::string user);*/
 
 			int		nicknameUsed(std::string nick);
-			int		usernameUsed(std::string user);*/
+			int		usernameUsed(std::string user);
 
 			class sendException : public std::exception
 			{
@@ -85,8 +85,5 @@ class	Server
 			std::map<int, Client *>	_clients;
 			int						_socket;
 };
-
-void	sendMessage(int clientFd, std::string msg);
-
 
 #endif

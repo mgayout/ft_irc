@@ -23,10 +23,11 @@ class	Client
 
 			void		setNickname(const std::string nick);
 			void		setUsername(const std::string user);
-			void		setAuthenticated(bool b);
+			void		setPassword(bool b);
 			void		setHexchat(bool b);
 			std::string	getNickname();
 			std::string	getUsername();
+			bool		getAuthenticated();
 			int			getSocket();
 			bool		getHexchat();
 
@@ -34,7 +35,7 @@ class	Client
 			int			_socket;
 			std::string	_nickname;
 			std::string	_username;
-			bool		_authenticated;
+			bool		_password;
 			bool		_hexchat;
 };
 

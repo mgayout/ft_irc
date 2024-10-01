@@ -35,9 +35,9 @@ void	Client::setUsername(const std::string user)
 	this->_username = user;
 }
 
-void	Client::setAuthenticated(bool b)
+void	Client::setPassword(bool b)
 {
-	this->_authenticated = b;
+	this->_password = b;
 }
 
 void	Client::setHexchat(bool b)
@@ -53,6 +53,13 @@ std::string	Client::getNickname()
 std::string	Client::getUsername()
 {
 	return this->_username;
+}
+
+bool	Client::getAuthenticated()
+{
+	if (this->_password && this->_nickname.size() && this->_username.size())
+		return true;
+	return false;
 }
 
 int	Client::getSocket()

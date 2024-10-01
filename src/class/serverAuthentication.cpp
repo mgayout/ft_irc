@@ -154,24 +154,4 @@ void	Server::setUserClient(std::string user)
 			send(this->_clients[this->_nbClient]->getSocket(), "\" is already used by an other client\n", 38, 0);
 		}
 	}
-}
-
-int	Server::nicknameUsed(std::string nick)
-{
-	for (unsigned int i = 0; i != this->_nbClient; i++)
-	{
-		if (this->_clients[i]->getNickname() == nick)
-			return 1;
-	}
-	return 0;
-}
-
-int	Server::usernameUsed(std::string user)
-{
-	for (unsigned int i = 0; i != this->_nbClient; i++)
-	{
-		if (this->_clients[i]->getUsername() == user)
-			return 1;
-	}
-	return 0;
 }*/
