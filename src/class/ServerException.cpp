@@ -16,3 +16,8 @@ const char	*Server::sendException::what(void) const throw()
 {
 	return ("send() error");
 }
+
+const char	*Server::pollException::what(void) const throw()
+{
+	return ("poll() error");
+}

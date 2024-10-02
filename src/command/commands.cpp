@@ -101,19 +101,19 @@ void	Server::nick(std::string arg, int clientFd)
 		{
 			if (this->_clients[clientFd]->getNickname().size())
 			{
-				msg = "Nickname has been change\n";
+				msg = "Nickname has been change for" + arg + "\n";
 				sendMessage(clientFd, msg);
 			}
 			else
 			{
-				msg = "Nickname has been add\n";
+				msg = "Nickname " + arg + " has been add\n";
 				sendMessage(clientFd, msg);
 			}
 			this->_clients[clientFd]->setNickname(arg);
 		}
 		else
 		{
-			msg = "New nickname is already used\n";
+			msg = "Nickname " + arg + " is already used\n";
 			sendMessage(clientFd, msg);
 		}
 	}
@@ -134,19 +134,19 @@ void	Server::user(std::string arg, int clientFd)
 		{
 			if (this->_clients[clientFd]->getUsername().size())
 			{
-				msg = "Username has been change\n";
+				msg = "Username has been change for " + arg + "\n";
 				sendMessage(clientFd, msg);
 			}
 			else
 			{
-				msg = "Username has been add\n";
+				msg = "Username " + arg + " has been add\n";
 				sendMessage(clientFd, msg);
 			}
 			this->_clients[clientFd]->setUsername(arg);
 		}
 		else
 		{
-			msg = "New username is already used\n";
+			msg = "Username " + arg + " is already used\n";
 			sendMessage(clientFd, msg);
 		}
 	}
@@ -217,12 +217,24 @@ void	Server::msg(std::string arg, int clientFd)
 	}
 }
 
-void	Server::quit(std::string arg, int clientFd)
+void	Server::quit(int clientFd)
 {
-	std::string	msg = "quit \"" + arg + "\"\n";
-	
-	std::cout << "quit \"" << arg << "\"\n";
+	std::string	msg = "Disconnected\n";
 	sendMessage(clientFd, msg);
+
+	for (unsigned int i = 0; i < this->_pfds.size(); i++)
+	{
+		if (this->_pfds[i].fd == clientFd)
+		{
+			std::cout << "Client n°" << i << " has been disconnected\n";
+			close (this->_pfds[i].fd);
+			close(clientFd);
+			this->_pfds.erase(this->_pfds.begin() + i);
+			this->_clients.erase(clientFd);
+			this->_nbClient--;
+			break;
+		}
+	}
 }
 
 void	Server::sendfile(std::string arg, int clientFd)

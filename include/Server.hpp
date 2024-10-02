@@ -54,7 +54,7 @@ class	Server
 			void		op(std::string arg, int clientFd);
 			void		deop(std::string arg, int clientFd);
 			void		msg(std::string arg, int clientFd);
-			void		quit(std::string arg, int clientFd);
+			void		quit(int clientFd);
 			void		sendfile(std::string arg, int clientFd);
 			void		getfile(std::string arg, int clientFd);
 			void		bot(std::string arg, int clientFd);
@@ -75,15 +75,21 @@ class	Server
 			public:
 				virtual const char *what() const throw();
 			};
+			class pollException : public std::exception
+			{
+			public:
+				virtual const char *what() const throw();
+			};
 
 	private:
-			unsigned int			_port;
-			std::string				_password;
-			unsigned int			_nbClient;
-			unsigned int			_nbClientMax;
-			struct pollfd*			_pfds;
-			std::map<int, Client *>	_clients;
-			int						_socket;
+			unsigned int				_port;
+			std::string					_password;
+			unsigned int				_nbClient;
+			unsigned int				_nbClientMax;
+			std::vector<struct pollfd>	_pfds;
+			struct pollfd				_pfdstmp;
+			std::map<int, Client *>		_clients;
+			int							_socket;
 };
 
 #endif

@@ -18,10 +18,10 @@ Server::Server(char **argv)
 	this->_password = argv[2];
 	this->_nbClient = 1;
 	this->_nbClientMax = 5;
-	this->_pfds = new struct pollfd[this->_nbClientMax + 1];
 	this->_socket = getSocket();
-	this->_pfds[0].fd = this->_socket;
-	this->_pfds[0].events = POLLIN;
+	this->_pfdstmp.fd = this->_socket;
+	this->_pfdstmp.events = POLLIN;
+	this->_pfds.push_back(this->_pfdstmp);
 }
 
 Server::~Server()
@@ -57,7 +57,7 @@ int	Server::getSocket()
 		std::cout << "Error: fail to listen" << std::endl;
 		exit(-1);
 	}
-	std::cout << "[Server] Waiting for connections on port " << this->_port << "..." << std::endl;
+	//std::cout << "[Server] Waiting for connections on port " << this->_port << "..." << std::endl;
 
 	return sock;
 }
@@ -66,21 +66,21 @@ void	Server::launching()
 {
 	while (1)
 	{
-		int	poll_count = poll(this->_pfds, this->_nbClient, -1);
+		int	poll_count = poll(this->_pfds.data(), this->_pfds.size(), -1);
 		if (poll_count == -1)
+			throw (Server::pollException());
+		for (unsigned int i = 0; i < this->_pfds.size(); i++)
 		{
-			std::cout << "Error: poll()" << std::endl;
-			exit(-1);
-		}
-		for (unsigned int i = 0; i < (this->_nbClient + 1); i++)
-		{
-			if (this->_pfds[i].revents & POLLIN)
-			{
-				if (this->_pfds[i].fd == this->_socket)
-					addClient();
-				else
-					clientRequest(i);
-			}
+			//std::cout << i << std::endl;
+			if (!this->_pfds[i].revents)
+				continue;
+			if (!(this->_pfds[i].revents & POLLIN))
+				continue;
+			if (this->_pfds[i].fd == this->_socket)
+				this->addClient();
+			else
+				this->clientRequest(i);
+			break;
 		}
 	}
 }
@@ -97,11 +97,11 @@ void	Server::addClient()
 		std::cout << "Error: fail to accept new client" << std::endl;
 	else
 	{
-		this->_pfds[this->_nbClient].fd = clientFd;
-		this->_pfds[this->_nbClient].events = POLLIN;
+		this->_pfdstmp.fd = clientFd;
+		this->_pfds.push_back(this->_pfdstmp);
 		this->_clients.insert(std::pair<int, Client *>(clientFd, new Client(clientFd)));
 		std::cout << "[Server] New client has been add" << std::endl;
-		sendMessage(this->_pfds[this->_nbClient].fd, "Welcome to ft_irc\n");
+		sendMessage(clientFd, "Welcome to ft_irc\n");
 		this->_nbClient++;
 	}
 }
@@ -113,7 +113,8 @@ void	Server::clientRequest(unsigned int idClient)
 	char		buffer[1024] = {0};
 	int			bytes_received, end, lines = 0;
 
-	if ((bytes_received = recv(clientFd, buffer, sizeof(buffer), 0)) > 0)
+	bytes_received = recv(clientFd, buffer, sizeof(buffer), 0);
+	if (bytes_received > 0)
 	{
 		buffer[bytes_received] = '\0';
 		msg = buffer;
@@ -122,13 +123,25 @@ void	Server::clientRequest(unsigned int idClient)
 				lines++;
 		while (lines)
 		{
-			end = msg.find('\n');
-			line = msg.substr(0, end);
+			if (this->_clients[clientFd]->getHexchat())
+			{
+				end = msg.find('\n');
+				line = msg.substr(0, end - 1);
+			}
+			else
+			{
+				end = msg.find('\n');
+				line = msg.substr(0, end);
+			}
+			//std::cout << line << std::endl;
 			this->parseCommand(clientFd, line);
 			msg = msg.substr(end + 1, msg.size() - (end + 1));
 			lines--;
 		}
 	}
+	else if (bytes_received <= 0)
+		this->quit(clientFd);
+
 }
 
 void	Server::parseCommand(int clientFd, std::string line)
@@ -145,6 +158,7 @@ void	Server::parseCommand(int clientFd, std::string line)
 	}
 	else
 		command = line;
+	//std::cout << command << " et " << arg << std::endl;
 	while (++i < 18)
 		if (command == commands[i])
 			break ;
@@ -190,7 +204,7 @@ void	Server::parseCommand(int clientFd, std::string line)
 			this->msg(arg, clientFd);
 			break;
 	case 13:
-			this->quit(arg, clientFd);
+			this->quit(clientFd);
 			break;
 	case 14:
 			this->sendfile(arg, clientFd);
@@ -202,7 +216,7 @@ void	Server::parseCommand(int clientFd, std::string line)
 			this->bot(arg, clientFd);
 			break;
 	default:
-			//sendMessage(clientFd, "No channel joined. Try /join #<channel>\n");
+			sendMessage(clientFd, "Nothing\n");
 			break;
 	}
 }

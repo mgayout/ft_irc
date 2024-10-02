@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:08:07 by mgayout           #+#    #+#             */
-/*   Updated: 2024/09/30 18:56:16 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/10/02 10:17:22 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,3 @@ int	parse(char *arg)
 		return 1;
 	return 0;
 }
-
-
-//rappel : read le hexchat
