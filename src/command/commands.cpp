@@ -14,6 +14,8 @@
 
 std::string	Server::join(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::vector<std::string> args = split(arg, ',');
 	for (size_t i = 0; i < args.size(); i++)
 	{
@@ -74,6 +76,8 @@ std::string	Server::joinDefault(std::string arg, Client *client)
 
 std::string	Server::part(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::vector<std::string> args = split(arg, ',');
 	for (size_t i = 0; i < args.size(); i++)
 	{
@@ -121,6 +125,8 @@ std::string	Server::partDefault(std::string arg, Client *client)
 
 std::string	Server::kick(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::vector<std::string> args = split(arg, ',');
 	for (size_t i = 0; i < args.size(); i++)
 	{
@@ -202,6 +208,8 @@ std::string	Server::kickDefault(std::string arg, Client *client)
 
 std::string	Server::invite(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::vector<std::string> args = split(arg, ' ');
 	Client *targetClient = findClient(args[1]);
 
@@ -248,6 +256,8 @@ std::string	Server::invite(std::string arg, Client *client)
 
 std::string	Server::topic(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::vector<std::string> args = split(arg, ' ');
 
 	if (args.size() < 2) 
@@ -292,6 +302,8 @@ std::string	Server::topic(std::string arg, Client *client)
 
 std::string	Server::mode(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::vector<std::string> args = split(arg, ' ');
 	if (args.size() < 2)
 	{
@@ -428,10 +440,15 @@ std::string	Server::pass(std::string arg, Client *client)
 
 	if (arg.size())
 	{
-		std::cout << arg << " et " << this->getPassword() << std::endl;
+		if (client->getPwd())
+			return this->msg462(client);
 		if (arg == this->getPassword())
 			client->setPwd(true);
+		else
+			return this->msg464(client);
 	}
+	else
+		return this->msg461(client, "PASS");
 	return "";
 }
 
@@ -439,15 +456,27 @@ std::string	Server::nick(std::string arg, Client *client)
 {
 	std::string	msg;
 
+	if (!client->getPwd())
+		return "";
 	if (arg.size())
 	{
+		if (client->getNick())
+			return this->msg462(client);
 		if (!this->nicknameUsed(arg))
 		{
 			client->setNickname(arg);
-			if (!client->getNick())
-				client->setNick(true);
+			client->setNick(true);
+			if (client->getAuthenticated())
+				return (this->msg001(client) +\
+						this->msg002(client) + \
+						this->msg003(client) + \
+						this->msg004(client));
 		}
+		else
+			return this->msg433(client, arg);
 	}
+	else
+		return this->msg461(client, "NICK");
 	return "";
 }
 
@@ -455,27 +484,32 @@ std::string	Server::user(std::string arg, Client *client)
 {
 	std::string	msg;
 
+	if (!client->getPwd())
+		return "";
 	if (arg.size())
 	{
+		if (client->getUser())
+			return this->msg462(client);
 		if (!this->usernameUsed(arg))
 		{
 			client->setUsername(arg);
-			if (!client->getUser())
-			{
-				client->setUser(true);
-				if (client->getAuthenticated())
-					return (this->msg001(client) +\
-							this->msg002(client) + \
-							this->msg003(client) + \
-							this->msg004(client));
-			}
+			client->setUser(true);
+			if (client->getAuthenticated())
+				return (this->msg001(client) +\
+						this->msg002(client) + \
+						this->msg003(client) + \
+						this->msg004(client));
 		}
 	}
+	else
+		return this->msg461(client, "USER");
 	return "";
 }
 
 std::string	Server::op(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::string	msg = "op \"" + arg + "\"\n";
 	
 	std::cout << "op \"" << arg << "\"\n";
@@ -485,6 +519,8 @@ std::string	Server::op(std::string arg, Client *client)
 
 std::string	Server::deop(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::string	msg = "deop \"" + arg + "\"\n";
 	
 	std::cout << "deop \"" << arg << "\"\n";
@@ -494,6 +530,8 @@ std::string	Server::deop(std::string arg, Client *client)
 
 std::string	Server::msg(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::string	msg, nick;
 	int			space;
 
@@ -539,6 +577,8 @@ std::string	Server::msg(std::string arg, Client *client)
 
 std::string	Server::quit(Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::string	msg = "Disconnected\n";
 	sendMessage(client->getSocket(), msg);
 
@@ -560,6 +600,8 @@ std::string	Server::quit(Client *client)
 
 std::string	Server::sendfile(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::string	msg = "sendfile \"" + arg + "\"\n";
 	
 	std::cout << "sendfile \"" << arg << "\"\n";
@@ -569,6 +611,8 @@ std::string	Server::sendfile(std::string arg, Client *client)
 
 std::string	Server::getfile(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::string	msg = "getfile \"" + arg + "\"\n";
 	
 	std::cout << "getfile \"" << arg << "\"\n";
@@ -578,6 +622,8 @@ std::string	Server::getfile(std::string arg, Client *client)
 
 std::string	Server::bot(std::string arg, Client *client)
 {
+	if (!client->getAuthenticated())
+		return "";
 	std::string	msg = "bot  \"" + arg + "\"\n";
 	
 	std::cout << "bot \"" << arg << "\"\n";

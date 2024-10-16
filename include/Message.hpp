@@ -19,5 +19,9 @@ std::string	msg001(Client *client);
 std::string	msg002(Client *client);
 std::string	msg003(Client *client);
 std::string	msg004(Client *client);
+std::string	msg433(Client *client, std::string nickname);
+std::string	msg461(Client *client, std::string command);
+std::string	msg462(Client *client);
+std::string	msg464(Client *client);
 
 #endif

@@ -21,12 +21,6 @@ const bool					&Client::getNick() {return this->_nick;}
 const bool					&Client::getUser() {return this->_user;}
 const bool					&Client::getHexchat() {return this->_hexchat;}
 bool						Client::getAuthenticated() {
-	if (this->getPwd())
-		std::cout << "pwd true" << std::endl;
-	if (this->getNick())
-		std::cout << "nick true" << std::endl;
-	if (this->getUser())
-		std::cout << "user true" << std::endl;
 	if (this->getPwd() && this->getNick() && this->getUser())
 		return true;
 	return false;

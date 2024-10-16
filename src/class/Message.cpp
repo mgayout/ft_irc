@@ -31,3 +31,23 @@ std::string	Server::msg004(Client *client) {
 	std::string	msg = this->getServerPrefix(client, "004") + this->getHostname() + " " + this->getVersion() + " 0 itkol" + "\r\n";
 	return msg;
 }
+
+std::string	Server::msg433(Client *client, std::string nickname) {
+	std::string	msg = this->getServerPrefix(client, "433") + " " + nickname + " :Nickname is already use" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg461(Client *client, std::string command) {
+	std::string	msg = this->getServerPrefix(client, "461") + command + " :Not enough parameters" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg462(Client *client) {
+	std::string	msg = this->getServerPrefix(client, "462") + ":You may not reregister" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg464(Client *client) {
+	std::string	msg = this->getServerPrefix(client, "464") + ":Password incorrect" + "\r\n";
+	return msg;
+}
