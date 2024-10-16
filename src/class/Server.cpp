@@ -12,16 +12,21 @@
 
 #include "../../include/Server.hpp"
 
-Server::Server(char **argv)
+Server::Server(char *hostname, int port, std::string pwd)
 {
-	this->_port = std::atoi(argv[1]);
-	this->_password = argv[2];
+	this->_hostname = hostname;
+	this->_port = port;
+	this->_password = pwd;
+	this->_version = "ft_irc-1.0";
+	this->_date = getCurrentDate();
+	this->_time = std::time(NULL);
 	this->_nbClient = 1;
 	this->_nbClientMax = 5;
-	this->_socket = getSocket();
+	this->createSocket();
 	this->_pfdstmp.fd = this->_socket;
 	this->_pfdstmp.events = POLLIN;
 	this->_pfds.push_back(this->_pfdstmp);
+	this->launching();
 }
 
 Server::~Server()
@@ -29,54 +34,34 @@ Server::~Server()
 	close(this->_socket);
 }
 
-int	Server::getSocket()
+void	Server::createSocket()
 {
-	struct sockaddr_in	sockstruct;
-	int	sock, opt = 1;
-
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == 0)
-	{
-		std::cout << "Error: fail to create socket" << std::endl;
-		exit(-1);
-	}
-	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
-	{
-		std::cout << "Error: fail to attach socket" << std::endl;
-		exit(-1);
-	}
-	sockstruct.sin_family = AF_INET;
-	sockstruct.sin_addr.s_addr = INADDR_ANY;
-	sockstruct.sin_port = htons(this->_port);
-	if (bind(sock, (struct sockaddr *)&sockstruct, sizeof(sockstruct)) < 0)
-	{
-		std::cout << "Error: fail to connect" << std::endl;
-		exit(-1);
-	}
-	if (listen(sock, this->_nbClientMax) < 0)
-	{
-		std::cout << "Error: fail to listen" << std::endl;
-		exit(-1);
-	}
-	//std::cout << "[Server] Waiting for connections on port " << this->_port << "..." << std::endl;
-
-	return sock;
+	if ((this->_socket = socket(AF_INET, SOCK_STREAM, 0)) <= 0)
+		throw (Server::SocketCreationError());
+	this->_sockstruct.sin_family = AF_INET;
+	this->_sockstruct.sin_addr.s_addr = INADDR_ANY;
+	this->_sockstruct.sin_port = htons(this->getPort());
+	if (bind(this->getSocket(), (struct sockaddr *)&this->getSockstruct(), sizeof(this->getSockstruct())) < 0)
+		throw (Server::SocketBindError());
+	if (listen(this->getSocket(), this->getNbClientMax()) < 0)
+		throw (Server::SocketListenError());
 }
 
 void	Server::launching()
 {
+	std::cout << "[Server] Waiting for connections on port " << this->getPort() << "..." << std::endl;
+
 	while (1)
 	{
-		int	poll_count = poll(this->_pfds.data(), this->_pfds.size(), -1);
-		if (poll_count == -1)
+		if (poll(this->_pfds.data(), this->_pfds.size(), -1) == -1)
 			throw (Server::pollException());
 		for (unsigned int i = 0; i < this->_pfds.size(); i++)
 		{
-			//std::cout << i << std::endl;
 			if (!this->_pfds[i].revents)
 				continue;
 			if (!(this->_pfds[i].revents & POLLIN))
 				continue;
-			if (this->_pfds[i].fd == this->_socket)
+			if (this->_pfds[i].fd == this->getSocket())
 				this->addClient();
 			else
 				this->clientRequest(i);
@@ -87,7 +72,7 @@ void	Server::launching()
 
 void	Server::addClient()
 {
-	struct sockaddr_storage	sockstruct;
+	struct sockaddr_in		sockstruct;
 	int						clientFd;
 	socklen_t				structlen = sizeof(sockstruct);
 
@@ -99,124 +84,105 @@ void	Server::addClient()
 	{
 		this->_pfdstmp.fd = clientFd;
 		this->_pfds.push_back(this->_pfdstmp);
-		this->_clients.insert(std::pair<int, Client *>(clientFd, new Client(clientFd)));
+		this->_clients.insert(std::pair<int, Client *>(clientFd, new Client(clientFd, sockstruct)));
 		std::cout << "[Server] New client has been add" << std::endl;
-		sendMessage(clientFd, "Welcome to ft_irc\n");
 		this->_nbClient++;
 	}
 }
 
-void	Server::clientRequest(unsigned int idClient)
+bool Server::isClient(Client *client)
 {
-	std::string	msg, line;
-	int			clientFd = this->_pfds[idClient].fd;
-	char		buffer[1024] = {0};
-	int			bytes_received, end, lines = 0;
-
-	bytes_received = recv(clientFd, buffer, sizeof(buffer), 0);
-	if (bytes_received > 0)
+	for (std::map<int, Client *>::iterator it = this->_clients.begin(); it != this->_clients.end(); ++it)
 	{
-		buffer[bytes_received] = '\0';
-		msg = buffer;
-		for (int i = 0; i != bytes_received; i++)
-			if (msg[i] == '\n')
-				lines++;
-		while (lines)
-		{
-			if (this->_clients[clientFd]->getHexchat())
-			{
-				end = msg.find('\n');
-				line = msg.substr(0, end - 1);
-			}
-			else
-			{
-				end = msg.find('\n');
-				line = msg.substr(0, end);
-			}
-			//std::cout << line << std::endl;
-			this->parseCommand(clientFd, line);
-			msg = msg.substr(end + 1, msg.size() - (end + 1));
-			lines--;
-		}
+		if (it->second == client)
+			return true;
 	}
-	else if (bytes_received <= 0)
-		this->quit(clientFd);
-
+	return false;
 }
 
-void	Server::parseCommand(int clientFd, std::string line)
+Client	*Server::findClient(std::string nick)
+{
+	std::map<int, Client *>::iterator it;
+
+	for (it = this->_clients.begin(); it != this->_clients.end(); it++)
+		if (it->second->getNickname() == nick)
+			return it->second;
+	return NULL;
+}
+
+void	Server::clientRequest(unsigned int idClient)
+{
+	int			clientFd = this->getPollfd(idClient);
+	char		buffer[1024];
+	int			bytes_received, line = 0;
+	std::string	buf, msg;
+
+	bytes_received = recv(clientFd, buffer, sizeof(buffer), 0);
+	if (bytes_received <= 0)
+		throw (Server::RecvError());
+	else
+	{
+		buffer[bytes_received] = '\0';
+		buf = buffer;
+		for (int i = 0; i < bytes_received; i++)
+			if (buf[i] == '\n')
+				line++;
+		for (int i = 0; i != line; i++)
+		{
+			msg = this->commands(this->splitBuffer(buf), clientFd);
+			if (msg.size())
+				send(clientFd, msg.c_str(), msg.size(), 0);
+			buf = buf.substr(buf.find('\n') + 1);
+		}
+	}
+}
+
+std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 {
 	std::string	commands[17] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "OP", "DEOP", "MSG", "QUIT", "SENDFILE", "GETFILE", "BOT"};
-	std::string	command, arg;
-	int			i = -1;
-	int			space;
+	int			i = 0;
 
-	if ((space = line.find(' ')) > 0)
-	{
-		command = line.substr(0, space);
-		arg = line.substr(space + 1, line.size() - (space + 1));
-	}
-	else
-		command = line;
-	//std::cout << command << " et " << arg << std::endl;
 	while (++i < 18)
-		if (command == commands[i])
+		if (buffer[0] == commands[i])
 			break ;
 	switch (i)
 	{
 	case 0:
-			this->join(arg, clientFd);
-			break;
+			return this->join(buffer[1], this->_clients[clientFd]);
 	case 1:
-			this->part(arg, clientFd);
-			break;
+			return this->part(buffer[1], this->_clients[clientFd]);
 	case 2:
-			this->kick(arg, clientFd);
-			break;
+			return this->kick(buffer[1], this->_clients[clientFd]);
 	case 3:
-			this->invite(arg, clientFd);
-			break;
+			return this->invite(buffer[1], this->_clients[clientFd]);
 	case 4:
-			this->topic(arg, clientFd);
-			break;
+			return this->topic(buffer[1], this->_clients[clientFd]);
 	case 5:
-			this->mode(arg, clientFd);
-			break;
+			return this->mode(buffer[1], this->_clients[clientFd]);
 	case 6:
-			this->cap(clientFd);
-			break;
+			return this->cap(this->_clients[clientFd]);
 	case 7:
-			this->pass(arg, clientFd);
-			break;
+			return this->pass(buffer[1], this->_clients[clientFd]);
 	case 8:
-			this->nick(arg, clientFd);
-			break;
+			return this->nick(buffer[1], this->_clients[clientFd]);
 	case 9:
-			this->user(arg, clientFd);
-			break;
+			return this->user(buffer[1], this->_clients[clientFd]);
 	case 10:
-			this->op(arg, clientFd);
-			break;
+			return this->op(buffer[1], this->_clients[clientFd]);
 	case 11:
-			this->deop(arg, clientFd);
-			break;
+			return this->deop(buffer[1], this->_clients[clientFd]);
 	case 12:
-			this->msg(arg, clientFd);
-			break;
+			return this->msg(buffer[1], this->_clients[clientFd]);
 	case 13:
-			this->quit(clientFd);
-			break;
+			return this->quit(this->_clients[clientFd]);
 	case 14:
-			this->sendfile(arg, clientFd);
-			break;
+			return this->sendfile(buffer[1], this->_clients[clientFd]);
 	case 15:
-			this->getfile(arg, clientFd);
-			break;
+			return this->getfile(buffer[1], this->_clients[clientFd]);
 	case 16:
-			this->bot(arg, clientFd);
-			break;
+			return this->bot(buffer[1], this->_clients[clientFd]);
 	default:
-			sendMessage(clientFd, "Nothing\n");
-			break;
+			return "";
 	}
+	return "";
 }

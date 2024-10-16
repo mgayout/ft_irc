@@ -18,25 +18,36 @@
 class	Client
 {
 	public:
-			Client(int socket);
+			Client(int socket, struct sockaddr_in sockstruct);
 			~Client();
 
-			void		setNickname(const std::string nick);
-			void		setUsername(const std::string user);
-			void		setPassword(bool b);
-			void		setHexchat(bool b);
-			std::string	getNickname();
-			std::string	getUsername();
-			bool		getAuthenticated();
-			int			getSocket();
-			bool		getHexchat();
+			const int					&getSocket();
+			const struct sockaddr_in	&getSockstruct();
+			const std::string			&getNickname();
+			const std::string			&getUsername();
+			const bool					&getPwd();
+			const bool					&getNick();
+			const bool					&getUser();
+			const bool					&getHexchat();
+			bool						getAuthenticated();
+
+			void						setNickname(const std::string nick);
+			void						setUsername(const std::string user);
+			void						setPwd(bool b);
+			void						setNick(bool b);
+			void						setUser(bool b);
+			void						setHexchat(bool b);
+
 
 	private:
-			int			_socket;
-			std::string	_nickname;
-			std::string	_username;
-			bool		_password;
-			bool		_hexchat;
+			int					_socket;
+			struct sockaddr_in	_sockstruct;
+			std::string			_nickname;
+			std::string			_username;
+			bool				_pwd;
+			bool				_nick;
+			bool				_user;
+			bool				_hexchat;
 };
 
 #endif

@@ -12,19 +12,18 @@
 
 #include "../include/Server.hpp"
 
-/*std::string	currentDateTime()
+std::string	getCurrentDate()
 {
-	time_t		now = time(0);
-	struct tm	timestruct;
+	std::time_t	now = std::time(NULL);
+	std::tm*	time = std::localtime(&now);
 	char		buffer[1024];
-	timestruct = *localtime(&now);
 
-	strftime(buffer, sizeof(buffer), "%X", &timestruct);
+	strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", time);
 
 	return buffer;
-}*/
+}
 
-void	Server::sendMessage(int clienFd, std::string msg)
+void	sendMessage(int clienFd, std::string msg)
 {
 	/*std::string	newMsg = "[" + currentDateTime() + "] : " + msg;
 	if (!this->_clients[clienFd]->getHexchat())
@@ -38,5 +37,32 @@ void	Server::sendMessage(int clienFd, std::string msg)
 			throw (Server::sendException());	
 	}*/
 	if (send(clienFd, msg.c_str(), msg.size(), 0) == -1)
-			throw (Server::sendException());
+		throw (Server::sendException());
+}
+
+std::string trim(const std::string& str) {
+    size_t start = 0;
+    size_t end = str.length();
+
+    while (start < end && std::isspace(static_cast<unsigned char>(str[start]))) {
+        ++start;
+    }
+
+    while (end > start && std::isspace(static_cast<unsigned char>(str[end - 1]))) {
+        --end;
+    }
+
+    return str.substr(start, end - start);
+}
+
+std::vector<std::string> split(const std::string& str, char delimiter) {
+    std::vector<std::string> tokens;
+    std::string token;
+    std::stringstream ss(str);
+
+    while (std::getline(ss, token, delimiter)) {
+        tokens.push_back(trim(token));
+    }
+
+    return tokens;
 }
