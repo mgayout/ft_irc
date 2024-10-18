@@ -19,7 +19,6 @@ Server::Server(char *hostname, int port, std::string pwd)
 	this->_password = pwd;
 	this->_version = "ft_irc-1.0";
 	this->_date = getCurrentDate();
-	this->_time = std::time(NULL);
 	this->_nbClient = 1;
 	this->_nbClientMax = 5;
 	this->createSocket();
@@ -90,26 +89,6 @@ void	Server::addClient()
 	}
 }
 
-bool Server::isClient(Client *client)
-{
-	for (std::map<int, Client *>::iterator it = this->_clients.begin(); it != this->_clients.end(); ++it)
-	{
-		if (it->second == client)
-			return true;
-	}
-	return false;
-}
-
-Client	*Server::findClient(std::string nick)
-{
-	std::map<int, Client *>::iterator it;
-
-	for (it = this->_clients.begin(); it != this->_clients.end(); it++)
-		if (it->second->getNickname() == nick)
-			return it->second;
-	return NULL;
-}
-
 void	Server::clientRequest(unsigned int idClient)
 {
 	int			clientFd = this->getPollfd(idClient);
@@ -140,47 +119,51 @@ void	Server::clientRequest(unsigned int idClient)
 std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 {
 	std::string	commands[17] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "OP", "DEOP", "MSG", "QUIT", "SENDFILE", "GETFILE", "BOT"};
-	int			i = 0;
+	int			i = -1;
+
+	for (unsigned int j = 0; j < buffer.size(); j++)
+		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;
 
 	while (++i < 18)
 		if (buffer[0] == commands[i])
 			break ;
+	std::cout << i << std::endl;
 	switch (i)
 	{
 	case 0:
-			return this->join(buffer[1], this->_clients[clientFd]);
+			return this->join(buffer, this->_clients[clientFd]);
 	case 1:
-			return this->part(buffer[1], this->_clients[clientFd]);
+			return this->part(buffer, this->_clients[clientFd]);
 	case 2:
-			return this->kick(buffer[1], this->_clients[clientFd]);
+			return this->kick(buffer, this->_clients[clientFd]);
 	case 3:
-			return this->invite(buffer[1], this->_clients[clientFd]);
+			return this->invite(buffer, this->_clients[clientFd]);
 	case 4:
-			return this->topic(buffer[1], this->_clients[clientFd]);
+			return this->topic(buffer, this->_clients[clientFd]);
 	case 5:
-			return this->mode(buffer[1], this->_clients[clientFd]);
+			return this->mode(buffer, this->_clients[clientFd]);
 	case 6:
 			return this->cap(this->_clients[clientFd]);
 	case 7:
-			return this->pass(buffer[1], this->_clients[clientFd]);
+			return this->pass(buffer, this->_clients[clientFd]);
 	case 8:
-			return this->nick(buffer[1], this->_clients[clientFd]);
+			return this->nick(buffer, this->_clients[clientFd]);
 	case 9:
-			return this->user(buffer[1], this->_clients[clientFd]);
+			return this->user(buffer, this->_clients[clientFd]);
 	case 10:
-			return this->op(buffer[1], this->_clients[clientFd]);
+			return this->op(buffer, this->_clients[clientFd]);
 	case 11:
-			return this->deop(buffer[1], this->_clients[clientFd]);
+			return this->deop(buffer, this->_clients[clientFd]);
 	case 12:
-			return this->msg(buffer[1], this->_clients[clientFd]);
+			return this->msg(buffer, this->_clients[clientFd]);
 	case 13:
 			return this->quit(this->_clients[clientFd]);
 	case 14:
-			return this->sendfile(buffer[1], this->_clients[clientFd]);
+			return this->sendfile(buffer, this->_clients[clientFd]);
 	case 15:
-			return this->getfile(buffer[1], this->_clients[clientFd]);
+			return this->getfile(buffer, this->_clients[clientFd]);
 	case 16:
-			return this->bot(buffer[1], this->_clients[clientFd]);
+			return this->bot(buffer, this->_clients[clientFd]);
 	default:
 			return "";
 	}

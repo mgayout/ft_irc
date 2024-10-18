@@ -29,7 +29,7 @@ class	Client
 			const bool					&getNick();
 			const bool					&getUser();
 			const bool					&getHexchat();
-			bool						getAuthenticated();
+			bool					getAuthenticated();
 
 			void						setNickname(const std::string nick);
 			void						setUsername(const std::string user);
@@ -38,16 +38,18 @@ class	Client
 			void						setUser(bool b);
 			void						setHexchat(bool b);
 
+			void	addChannel(std::string channel);
 
 	private:
-			int					_socket;
-			struct sockaddr_in	_sockstruct;
-			std::string			_nickname;
-			std::string			_username;
-			bool				_pwd;
-			bool				_nick;
-			bool				_user;
-			bool				_hexchat;
+			int							_socket;
+			struct sockaddr_in			_sockstruct;
+			std::string					_nickname;
+			std::string					_username;
+			bool						_pwd;
+			bool						_nick;
+			bool						_user;
+			bool						_hexchat;
+			std::vector<std::string>	_channels;
 };
 
 #endif

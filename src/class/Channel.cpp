@@ -6,161 +6,41 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:14:52 by biaroun           #+#    #+#             */
-/*   Updated: 2024/10/11 17:53:45 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/10/18 18:50:25 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Channel.hpp"
 
-Channel::Channel(Client *fonda, std::string name, std::string password) : _name(name), _password(password), _topic(""), _private(false), _TopicChange(false), _limitClients(false), _maxClients(1)
+Channel::Channel(Client *client, std::string name, std::string password)
 {
-    _members.insert(std::make_pair(fonda, "OP"));
+	this->_name = name;
+	this->_password = password;
+	this->_topic = "";
+	this->_i = false;
+	this->_t = false;
+	this->_k = false;
+	if (this->getPassword().size())
+		this->_k = true;
+	this->_l = false;
+	this->_maxClient = 1;
+	this->_date = getCurrentDate();
+    _members.insert(std::pair<std::string, bool>(client->getUsername(), true));
 }
 
 Channel::~Channel() {}
 
-
-void Channel::addMember(Client *client, std::string password)
+bool	Channel::isInvited(std::string username)
 {
-    if (_password != password)
-        return;
-    if (_limitClients &&  _members.size() >= _maxClients)
-        return;
-    _members.insert(std::make_pair(client, "USER"));
-}
-
-void Channel::removeMember(Client *client)
-{
-    _members.erase(client);
-}
-
-bool Channel::isOP(Client *client)
-{
-    if (_members[client] == "OP")
-        return true;
-    return false;
-}
-
-bool Channel::isInvited(Client *client)
-{
-    if (_invited.find(client) != _invited.end())
-    {
-        _invited.erase(client);
-        return true;
-    }
-    return false;
-}
-
-bool Channel::isInviteOnly()
-{
-    if (_private)
-        return true;
-    return false;
-}
-
-bool Channel::isMember(Client *client)
-{
-    if (_members.find(client) != _members.end())
-        return true;
-    return false;
-}
-
-void Channel::ADDInvited(Client *client)
-{
-    _invited.insert(client);
-}
-
-void Channel::setMaxClients(int maxClients)
-{
-    _maxClients = maxClients;
-}
-
-void Channel::setTopicChange(bool b)
-{
-    _TopicChange = b;
-}
-
-void Channel::setTopic(std::string topic)
-{
-    _topic = topic;
-}
-
-void Channel::setPassword(std::string password)
-{
-    _password = password;
-}
-
-void Channel::setPrivate(bool priv)
-{
-    _private = priv;
-}
-
-bool Channel::getPrivate()
-{
-    return _private;
-}
-
-std::string Channel::getPassword()
-{
-    return _password;
-}
-
-std::string Channel::getName()
-{
-    return _name;
-}
-
-std::string Channel::getTopic()
-{
-    return _topic;
-}
-
-bool Channel::isTopicProtected()
-{
-    return _TopicChange;
-}
-
-bool Channel::isFull()
-{
-    if (_limitClients && _members.size() >= _maxClients)
-        return true;
-    return false;
-}
-
-void Channel::OP(Client *client)
-{
-    _members[client] = "OP";
-}
-
-void Channel::DEOP(Client *client)
-{
-    _members[client] = "USER";
-}
-
-void	Channel::SendMessChanAll(std::string msg)
-{
-	for (std::map<Client*, std::string>::iterator it = _members.begin(); it != _members.end(); ++it) {
-        Client* client = it->first;
-		sendMessage(client->getSocket(), msg);
+	for (unsigned int i = 0; i < this->_invited.size(); i++)
+	{
+		if (this->_invited[i] == username)
+			return true;
 	}
+	return false;
 }
 
-void	Channel::SendMessChan(std::string msg, Client *send)
+void	Channel::addClient(std::string username)
 {
-	for (std::map<Client*, std::string>::iterator it = _members.begin(); it != _members.end(); ++it) {
-        Client* client = it->first;
-		if (client == send)
-			continue;
-		sendMessage(client->getSocket(), msg);
-	}
-}
-
-Client *Channel::findClient(std::string nick)
-{
-    for (std::map<Client*, std::string>::iterator it = _members.begin(); it != _members.end(); ++it) {
-        Client* client = it->first;
-        if (client->getNickname() == nick)
-            return client;
-    }
-    return NULL;
+	this->_members.insert(std::pair<std::string, bool>(username, false));
 }

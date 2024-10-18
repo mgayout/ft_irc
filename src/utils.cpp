@@ -23,23 +23,6 @@ std::string	getCurrentDate()
 	return buffer;
 }
 
-void	sendMessage(int clienFd, std::string msg)
-{
-	/*std::string	newMsg = "[" + currentDateTime() + "] : " + msg;
-	if (!this->_clients[clienFd]->getHexchat())
-	{
-		if (send(clienFd, newMsg.c_str(), newMsg.size(), 0) == -1)
-			throw (Server::sendException());
-	}
-	else
-	{
-		if (send(clienFd, msg.c_str(), msg.size(), 0) == -1)
-			throw (Server::sendException());	
-	}*/
-	if (send(clienFd, msg.c_str(), msg.size(), 0) == -1)
-		throw (Server::sendException());
-}
-
 std::string trim(const std::string& str) {
     size_t start = 0;
     size_t end = str.length();
@@ -55,14 +38,17 @@ std::string trim(const std::string& str) {
     return str.substr(start, end - start);
 }
 
-std::vector<std::string> split(const std::string& str, char delimiter) {
-    std::vector<std::string> tokens;
-    std::string token;
-    std::stringstream ss(str);
+std::vector<std::string> split(const std::string& str, char delimiter)
+{
+	std::vector<std::string>	tab;
 
-    while (std::getline(ss, token, delimiter)) {
-        tokens.push_back(trim(token));
-    }
-
-    return tokens;
+	for (unsigned int i = 0, j = 0; i <= str.size(); i++)
+	{
+		if (str[i] == delimiter || str[i] == '\0')
+		{
+			tab.push_back(str.substr(j, i - j));
+			j = i;
+		}
+	}
+    return tab;
 }

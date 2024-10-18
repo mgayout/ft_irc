@@ -13,7 +13,7 @@
 #include "../../include/Server.hpp"
 
 std::string	Server::msg001(Client *client) {
-	std::string	msg = this->getServerPrefix(client, "001") + "Welcome to the ft_irc " + client->getNickname() + "\r\n";
+	std::string	msg = this->getServerPrefix(client, "001") + ":Welcome to the ft_irc " + client->getNickname() + "\r\n";
 	return msg;
 }
 
@@ -32,8 +32,48 @@ std::string	Server::msg004(Client *client) {
 	return msg;
 }
 
+std::string	Server::msg324(Client *client, std::string channel) {
+	std::string	msg = this->getServerPrefix(client, "324") + channel + " " + this->msgmodechannel(channel) + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg329(Client *client, Channel *channel) {
+	std::string	msg = this->getServerPrefix(client, "329") + channel->getName() + " " + channel->getTopic() + " " + channel->getDate() + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg332(Client *client, Channel *channel) {
+	std::string	msg = this->getServerPrefix(client, "332") + channel->getName() + " :" + channel->getTopic() + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg333(Client *client, Channel *channel) {
+	std::string	msg = this->getServerPrefix(client, "333") + channel->getName() + " " + channel->getTopicUser() + " " + channel->getTopicTime() + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg353(Client *client, std::string channel) {
+	std::string	msg = this->getServerPrefix(client, "353") + "= " + channel + " :" + this->msgclientschannel(channel) + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg366(Client *client, std::string channel) {
+	std::string	msg = this->getServerPrefix(client, "366") + channel + " :End of /NAMES list" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg403(Client *client, std::string channel) {
+	std::string	msg = this->getServerPrefix(client, "403") + client->getNickname() + " " + channel + " :No such channel" + "\r\n";
+	return msg;
+}
+
 std::string	Server::msg433(Client *client, std::string nickname) {
 	std::string	msg = this->getServerPrefix(client, "433") + " " + nickname + " :Nickname is already use" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg451(Client *client, std::string command) {
+	std::string	msg = this->getServerPrefix(client, "451") + command + " :You have not registered" + "\r\n";
 	return msg;
 }
 
@@ -43,11 +83,41 @@ std::string	Server::msg461(Client *client, std::string command) {
 }
 
 std::string	Server::msg462(Client *client) {
-	std::string	msg = this->getServerPrefix(client, "462") + ":You may not reregister" + "\r\n";
+	std::string	msg = this->getServerPrefix(client, "462") + " :You may not reregister" + "\r\n";
 	return msg;
 }
 
 std::string	Server::msg464(Client *client) {
-	std::string	msg = this->getServerPrefix(client, "464") + ":Password incorrect" + "\r\n";
+	std::string	msg = this->getServerPrefix(client, "464") + " :Password incorrect" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg471(Client *client, std::string channel) {
+	std::string	msg = this->getServerPrefix(client, "471") + channel + " :Cannot join channel (+l)" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg473(Client *client, std::string channel) {
+	std::string	msg = this->getServerPrefix(client, "473") + channel + " :Cannot join channel (+i)" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg475(Client *client, std::string channel) {
+	std::string	msg = this->getServerPrefix(client, "475") + channel + " :Cannot join channel (+k)" + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg476(Client *client, std::string channel) {
+	std::string	msg = this->getServerPrefix(client, "476") + channel + " :Bad Channel Mask" + "\r\n";
+	return msg;
+}
+
+std::string Server::msgjoin(Client *client, std::string channel) {
+	std::string msg = this->getUserPrefix(client) + "JOIN " + channel + "\r\n";
+	return msg;
+}
+
+std::string Server::msgjoinop(Client *client, std::string channel) {
+	std::string msg = ":" + this->getHostname() + " MODE " + channel + " +o " + client->getNickname() + "\r\n";
 	return msg;
 }

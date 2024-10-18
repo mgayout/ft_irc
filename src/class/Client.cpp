@@ -28,3 +28,8 @@ Client::~Client()
 {
 
 }
+
+void	Client::addChannel(std::string channel)
+{
+	this->_channels.push_back(channel);
+}

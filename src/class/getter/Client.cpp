@@ -20,7 +20,9 @@ const bool					&Client::getPwd() {return this->_pwd;}
 const bool					&Client::getNick() {return this->_nick;}
 const bool					&Client::getUser() {return this->_user;}
 const bool					&Client::getHexchat() {return this->_hexchat;}
-bool						Client::getAuthenticated() {
+
+bool						Client::getAuthenticated()
+{
 	if (this->getPwd() && this->getNick() && this->getUser())
 		return true;
 	return false;

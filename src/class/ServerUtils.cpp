@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 14:18:12 by mgayout           #+#    #+#             */
-/*   Updated: 2024/10/16 16:07:06 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/10/18 19:56:40 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,10 @@ int	Server::usernameUsed(std::string user)
 	return 0;
 }
 
-std::string	Server::getUserPrefix(Client *client)
+void	Server::sendChannel(Channel *channel, std::string message)
 {
-	std::string	prefix = ":" + client->getNickname() + "!" + client->getUsername() + "@" + this->getHostname() + " ";
-	
-	return prefix;
-}
-
-std::string	Server::getServerPrefix(Client *client, std::string code)
-{
-	std::string	prefix = ":" + this->getHostname() + " " + code + " " + client->getNickname() + " ";
-	
-	return prefix;
+	for (std::map<std::string, bool>::iterator it = channel->getMembers().begin(); it != channel->getMembers().end(); ++it)
+		for (unsigned int i = 1; i < this->getNbClient(); i++)
+			if (this->_clients[this->_pfds[i].fd]->getUsername() == it->first)
+				send(this->_clients[this->_pfds[i].fd]->getSocket(), message.c_str(), message.size(), 0);
 }

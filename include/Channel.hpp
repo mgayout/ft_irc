@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:13:42 by biaroun           #+#    #+#             */
-/*   Updated: 2024/10/11 17:54:40 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/10/18 18:46:44 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,44 +24,44 @@ class	Channel
 			Channel(Client *fonda, std::string name, std::string password);
 			~Channel();
 
-			void	addMember(Client *client, std::string password);
-			void	removeMember(Client *client);
-            bool    isOP(Client *client);
-			bool	isInvited(Client *client);
-			bool	isInviteOnly();
-			bool	isMember(Client *client);
-			bool	isTopicProtected();
+			const std::string			&getName();
+			const std::string			&getPassword();
+			const std::string			&getTopic();
+			const std::string			&getTopicUser();
+			const std::string			&getTopicTime();
+			const std::string			&getDate();
+			const bool					&getI();
+			const bool					&getT();
+			const bool					&getK();
+			const bool					&getL();
+			const unsigned int			&getMaxClient();
+			std::vector<std::string>	&getInvited();
+			std::map<std::string, bool>	&getMembers();
 
-			void	ADDInvited(Client *client);
-            
-			void	OP(Client *client);
-			void	DEOP(Client *client);
-			void	setTopicChange(bool b);
 			void	setTopic(std::string topic);
-			void	setPassword(std::string password);
-            void    setPrivate(bool priv);
-			void	setMaxClients(int maxClients);
-            
-			bool	isFull();
-            bool    getPrivate();
-			std::string getPassword();
-			std::string	getName();
-			std::string	getTopic();
+			void	setI(bool i);
+			void	setT(bool t);
+			void	setK(bool k);
+			void	setL(bool l);
+			void	setMaxClient(unsigned int max);
 
-			void	SendMessChanAll(std::string msg);
-			void	SendMessChan(std::string msg, Client *send);
-			Client  *findClient(std::string nick);
+			bool	isInvited(std::string username);
+			void	addClient(std::string username);
 
 	private:
 			std::string						_name;
 			std::string						_password;
 			std::string						_topic;
-            bool        					_private;
-			bool							_TopicChange;
-			bool							_limitClients;
-            unsigned int					_maxClients;
-			std::set<Client*>				_invited;
-			std::map<Client*, std::string>	_members;
+			std::string						_topicUser;
+			std::string						_topicTime;
+			std::string						_date;
+            bool        					_i;
+			bool							_t;
+			bool							_k;
+			bool							_l;
+            unsigned int					_maxClient;
+			std::vector<std::string>		_invited;
+			std::map<std::string, bool>		_members;
 };
 
 #endif
