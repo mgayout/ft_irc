@@ -121,3 +121,20 @@ std::string Server::msgjoinop(Client *client, std::string channel) {
 	std::string msg = ":" + this->getHostname() + " MODE " + channel + " +o " + client->getNickname() + "\r\n";
 	return msg;
 }
+
+std::string	Server::msgquit(Client *client, std::vector<std::string> arg) {
+	std::string msg;
+	
+	for (unsigned int i = 1; i < arg.size(); i++)
+		msg += arg[i] + " ";
+	msg.erase(msg.size() - 1, 1);
+	msg = this->getUserPrefix(client) + "QUIT :Quit: " + msg + "\r\n";
+	return msg;
+}
+
+std::string Server::msgprivmsg(Client *client, std::string target, std::string message) {
+	std::string	msg;
+
+	msg = this->getUserPrefix(client) + "PRIVMSG " + target + " :" + message + "\n\r";
+	return msg;
+}

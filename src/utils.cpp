@@ -16,7 +16,7 @@ std::string	getCurrentDate()
 {
 	std::time_t	now = std::time(NULL);
 	std::tm*	time = std::localtime(&now);
-	char		buffer[1024];
+	char		buffer[25];
 
 	strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", time);
 

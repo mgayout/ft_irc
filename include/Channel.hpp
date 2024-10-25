@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:13:42 by biaroun           #+#    #+#             */
-/*   Updated: 2024/10/18 18:46:44 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/10/22 10:09:00 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ class	Channel
 			const unsigned int			&getMaxClient();
 			std::vector<std::string>	&getInvited();
 			std::map<std::string, bool>	&getMembers();
+			int							getNbClient();
 
 			void	setTopic(std::string topic);
 			void	setI(bool i);
@@ -47,6 +48,7 @@ class	Channel
 
 			bool	isInvited(std::string username);
 			void	addClient(std::string username);
+			void	removeClient(std::string username);
 
 	private:
 			std::string						_name;

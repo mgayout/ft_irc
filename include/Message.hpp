@@ -37,6 +37,8 @@ std::string	msg475(Client *client, std::string channel);
 std::string	msg476(Client *client, std::string channel);
 std::string	msgjoin(Client *client, std::string channel);
 std::string	msgjoinop(Client *client, std::string channel);
+std::string	msgquit(Client *client, std::vector<std::string> arg);
+std::string	msgprivmsg(Client *client, std::string target, std::string message);
 
 std::string	getUserPrefix(Client *client);
 std::string	getServerPrefix(Client *client, std::string code);

@@ -26,21 +26,27 @@ Server::Server(char *hostname, int port, std::string pwd)
 	this->_pfdstmp.events = POLLIN;
 	this->_pfds.push_back(this->_pfdstmp);
 	this->launching();
+	this->closeServer();
 }
 
 Server::~Server()
 {
-	close(this->_socket);
+
 }
 
 void	Server::createSocket()
 {
+	int	opt = 1;
+
 	if ((this->_socket = socket(AF_INET, SOCK_STREAM, 0)) <= 0)
 		throw (Server::SocketCreationError());
+	std::memset(&this->_sockstruct, 0, sizeof(this->_sockstruct));
 	this->_sockstruct.sin_family = AF_INET;
 	this->_sockstruct.sin_addr.s_addr = INADDR_ANY;
 	this->_sockstruct.sin_port = htons(this->getPort());
-	if (bind(this->getSocket(), (struct sockaddr *)&this->getSockstruct(), sizeof(this->getSockstruct())) < 0)
+	if (setsockopt(this->getSocket(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+		throw (Server::SocketSetsockoptError());
+	if (bind(this->getSocket(), (struct sockaddr *)&this->_sockstruct, sizeof(this->_sockstruct)) < 0)
 		throw (Server::SocketBindError());
 	if (listen(this->getSocket(), this->getNbClientMax()) < 0)
 		throw (Server::SocketListenError());
@@ -50,11 +56,11 @@ void	Server::launching()
 {
 	std::cout << "[Server] Waiting for connections on port " << this->getPort() << "..." << std::endl;
 
-	while (1)
+	while (!ctrl)
 	{
-		if (poll(this->_pfds.data(), this->_pfds.size(), -1) == -1)
+		if (poll(this->_pfds.data(), this->_pfds.size(), -1) == -1 && !ctrl)
 			throw (Server::pollException());
-		for (unsigned int i = 0; i < this->_pfds.size(); i++)
+		for (unsigned int i = 0; i < this->_pfds.size() && !ctrl; i++)
 		{
 			if (!this->_pfds[i].revents)
 				continue;
@@ -118,7 +124,7 @@ void	Server::clientRequest(unsigned int idClient)
 
 std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 {
-	std::string	commands[17] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "OP", "DEOP", "MSG", "QUIT", "SENDFILE", "GETFILE", "BOT"};
+	std::string	commands[17] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "OP", "DEOP", "PRIVMSG", "QUIT", "SENDFILE", "GETFILE", "BOT"};
 	int			i = -1;
 
 	for (unsigned int j = 0; j < buffer.size(); j++)
@@ -155,9 +161,9 @@ std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 	case 11:
 			return this->deop(buffer, this->_clients[clientFd]);
 	case 12:
-			return this->msg(buffer, this->_clients[clientFd]);
+			return this->privmsg(buffer, this->_clients[clientFd]);
 	case 13:
-			return this->quit(this->_clients[clientFd]);
+			return this->quit(buffer, this->_clients[clientFd]);
 	case 14:
 			return this->sendfile(buffer, this->_clients[clientFd]);
 	case 15:
@@ -168,4 +174,16 @@ std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 			return "";
 	}
 	return "";
+}
+
+void	Server::closeServer()
+{
+	std::vector<std::string> null;
+
+	for (unsigned int i = 1; i < this->getNbClient(); i++)
+		this->quit(null, this->_clients[this->_pfds[i].fd]);
+	this->_pfds.erase(this->_pfds.begin());
+	close(this->getSocket());
+	shutdown(this->getSocket(), SHUT_RDWR);
+	std::cout << "\nBye !" << std::endl;
 }

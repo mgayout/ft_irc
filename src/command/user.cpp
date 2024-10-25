@@ -24,7 +24,7 @@ std::string	Server::user(std::vector<std::string> arg, Client *client)
 		{
 			client->setUsername(arg[1]);
 			client->setUser(true);
-			if (client->getAuthenticated())
+			if (client->isAuthenticated())
 				return (this->msg001(client) + \
 						this->msg002(client) + \
 						this->msg003(client) + \

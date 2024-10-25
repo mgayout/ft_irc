@@ -6,11 +6,13 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:08:07 by mgayout           #+#    #+#             */
-/*   Updated: 2024/10/16 14:28:15 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/10/22 17:17:10 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/Server.hpp"
+
+volatile sig_atomic_t ctrl = 0;
 
 int	main(int argc, char **argv)
 {
@@ -42,6 +44,8 @@ int	main(int argc, char **argv)
 	
 	try
 	{
+		signal(SIGINT, handleSignal);
+	
 		Server	server(hostname, port, pwd);
 	}
 	catch(const std::exception& e)
@@ -52,3 +56,8 @@ int	main(int argc, char **argv)
 	return 0;
 }
 
+void	handleSignal(int signal)
+{
+	if (signal == SIGINT)
+		ctrl++;
+}

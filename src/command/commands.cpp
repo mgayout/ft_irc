@@ -21,7 +21,7 @@ std::string	Server::cap(Client *client)
 
 std::string	Server::op(std::vector<std::string> arg, Client *client)
 {
-	if (!client->getAuthenticated())
+	if (!client->isAuthenticated())
 		return "";
 	
 	std::cout << "op \"" << arg[1] << "\"\n";
@@ -30,25 +30,16 @@ std::string	Server::op(std::vector<std::string> arg, Client *client)
 
 std::string	Server::deop(std::vector<std::string> arg, Client *client)
 {
-	if (!client->getAuthenticated())
+	if (!client->isAuthenticated())
 		return "";
 	
 	std::cout << "deop \"" << arg[1] << "\"\n";
 	return "";
 }
 
-std::string	Server::msg(std::vector<std::string> arg, Client *client)
-{
-	if (!client->getAuthenticated())
-		return "";
-	
-	std::cout << "msg \"" << arg[1] << "\"\n";
-	return "";
-}
-
 std::string	Server::sendfile(std::vector<std::string> arg, Client *client)
 {
-	if (!client->getAuthenticated())
+	if (!client->isAuthenticated())
 		return "";
 	
 	std::cout << "sendfile \"" << arg[1] << "\"\n";
@@ -57,7 +48,7 @@ std::string	Server::sendfile(std::vector<std::string> arg, Client *client)
 
 std::string	Server::getfile(std::vector<std::string> arg, Client *client)
 {
-	if (!client->getAuthenticated())
+	if (!client->isAuthenticated())
 		return "";
 	
 	std::cout << "getfile \"" << arg[1] << "\"\n";
@@ -66,7 +57,7 @@ std::string	Server::getfile(std::vector<std::string> arg, Client *client)
 
 std::string	Server::bot(std::vector<std::string> arg, Client *client)
 {
-	if (!client->getAuthenticated())
+	if (!client->isAuthenticated())
 		return "";
 	
 	std::cout << "bot \"" << arg[1] << "\"\n";

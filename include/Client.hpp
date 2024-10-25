@@ -20,6 +20,9 @@ class	Client
 	public:
 			Client(int socket, struct sockaddr_in sockstruct);
 			~Client();
+			bool	isAuthenticated();
+			void	addChannel(std::string channel);
+			bool	isConnected(std::string channel);
 
 			const int					&getSocket();
 			const struct sockaddr_in	&getSockstruct();
@@ -29,7 +32,7 @@ class	Client
 			const bool					&getNick();
 			const bool					&getUser();
 			const bool					&getHexchat();
-			bool					getAuthenticated();
+			std::vector<std::string>	getChannel();
 
 			void						setNickname(const std::string nick);
 			void						setUsername(const std::string user);
@@ -37,8 +40,6 @@ class	Client
 			void						setNick(bool b);
 			void						setUser(bool b);
 			void						setHexchat(bool b);
-
-			void	addChannel(std::string channel);
 
 	private:
 			int							_socket;

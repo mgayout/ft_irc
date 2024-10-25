@@ -14,7 +14,7 @@
 
 std::string	Server::kick(std::vector<std::string> arg, Client *client)
 {
-	if (!client->getAuthenticated())
+	if (!client->isAuthenticated())
 		return "";
 	for (size_t i = 0; i < arg.size(); i++)
 	{

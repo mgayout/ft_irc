@@ -19,6 +19,10 @@ class SocketCreationError : public std::exception {
 public:
 	virtual const char *what() const throw();
 };
+class SocketSetsockoptError : public std::exception {
+public:
+	virtual const char *what() const throw();
+};
 class SocketBindError : public std::exception {
 public:
 	virtual const char *what() const throw();

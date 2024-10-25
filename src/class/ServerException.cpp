@@ -17,6 +17,11 @@ const char	*Server::SocketCreationError::what(void) const throw()
 	return ("socket() error");
 }
 
+const char	*Server::SocketSetsockoptError::what(void) const throw()
+{
+	return ("setsockopt() error");
+}
+
 const char	*Server::SocketBindError::what(void) const throw()
 {
 	return ("bind() error");

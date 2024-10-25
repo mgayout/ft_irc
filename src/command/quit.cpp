@@ -12,22 +12,33 @@
 
 #include "../../include/Server.hpp"
 
-std::string	Server::quit(Client *client)
+std::string	Server::quit(std::vector<std::string> arg, Client *client)
 {
-	if (!client->getAuthenticated())
+	std::vector<std::string>	tmp;
+	int							fd;
+
+	if (!client->isAuthenticated())
 		return "";
-	for (unsigned int i = 0; i < this->_pfds.size(); i++)
+	else if (arg.size() > 1)
+		this->sendAll(client->getUsername(), this->msgquit(client, arg));
+	tmp = client->getChannel();
+	for (unsigned int i = 0; i < tmp.size(); i++)
 	{
-		if (this->_pfds[i].fd == client->getSocket())
+		this->_channels[tmp[i]]->removeClient(client->getUsername());
+		if (!this->_channels[tmp[i]]->getNbClient())
 		{
-			std::cout << "Client n°" << i << " has been disconnected\n";
-			close (this->_pfds[i].fd);
-			close(client->getSocket());
-			this->_pfds.erase(this->_pfds.begin() + i);
-			this->_clients.erase(client->getSocket());
-			this->_nbClient--;
-			break;
+			std::cout << "salut" << std::endl;
+			delete this->_channels[tmp[i]];
+			this->_channels.erase(tmp[i]);
 		}
 	}
+	fd = client->getSocket();
+	delete this->_clients[fd];
+	this->_clients.erase(fd);
+	close(fd);
+	for (unsigned int i = 1; i < this->_pfds.size(); i++)
+		if (this->_pfds[i].fd == fd)
+			this->_pfds.erase(this->_pfds.begin() + i);
+	this->_nbClient--;
 	return "";
 }

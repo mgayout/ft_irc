@@ -14,7 +14,7 @@
 
 std::string	Server::topic(std::vector<std::string> arg, Client *client)
 {
-	if (!client->getAuthenticated())
+	if (!client->isAuthenticated())
 		return "";
 	else if (arg.size() == 1)
 		return this->msg461(client, "TOPIC");

@@ -19,14 +19,10 @@ std::string		join(std::vector<std::string> arg, Client *client);
 std::string		createChannel(std::string channel, std::string password, Client *client);
 std::string		joinChannel(std::string channel, std::string password, Client *client);
 
-std::string		joinPsswrd(std::vector<std::string> arg, Client *client);
-std::string		joinDefault(std::vector<std::string> arg, Client *client);
 std::string		part(std::vector<std::string> arg, Client *client);
-std::string		partDefault(std::vector<std::string> arg, Client *client);
-std::string		partReason(std::vector<std::string> arg, Client *client);
+
 std::string		kick(std::vector<std::string> arg, Client *client);
-std::string		kickDefault(std::vector<std::string> arg, Client *client);
-std::string		kickReason(std::vector<std::string> arg, Client *client);
+
 std::string		invite(std::vector<std::string> arg, Client *client);
 std::string		topic(std::vector<std::string> arg, Client *client);
 std::string		mode(std::vector<std::string> arg, Client *client);
@@ -37,8 +33,13 @@ std::string		nick(std::vector<std::string> arg, Client *client);
 std::string		user(std::vector<std::string> arg, Client *client);
 std::string		op(std::vector<std::string> arg, Client *client);
 std::string		deop(std::vector<std::string> arg, Client *client);
-std::string		msg(std::vector<std::string> arg, Client *client);
-std::string		quit(Client *client);
+
+std::string		privmsg(std::vector<std::string> arg, Client *client);
+std::string		privmsgChannel(std::string channel, std::string msg, Client *client);
+std::string		privmsgClient(std::string target, std::string msg, Client *client);
+
+std::string		quit(std::vector<std::string> arg, Client *client);
+
 std::string		sendfile(std::vector<std::string> arg, Client *client);
 std::string		getfile(std::vector<std::string> arg, Client *client);
 std::string		bot(std::vector<std::string> arg, Client *client);

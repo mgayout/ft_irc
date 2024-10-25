@@ -29,7 +29,23 @@ Client::~Client()
 
 }
 
+bool	Client::isAuthenticated()
+{
+	if (this->getPwd() && this->getNick() && this->getUser())
+		return true;
+	return false;
+}
+
 void	Client::addChannel(std::string channel)
 {
 	this->_channels.push_back(channel);
+}
+
+bool	Client::isConnected(std::string channel)
+{
+	std::vector<std::string>	tmp = this->getChannel();
+
+	if (std::find(tmp.begin(), tmp.end(), channel) == tmp.end())
+		return false;
+	return true;
 }

@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:14:52 by biaroun           #+#    #+#             */
-/*   Updated: 2024/10/18 18:50:25 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/10/22 10:05:14 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,9 @@ bool	Channel::isInvited(std::string username)
 void	Channel::addClient(std::string username)
 {
 	this->_members.insert(std::pair<std::string, bool>(username, false));
+}
+
+void	Channel::removeClient(std::string username)
+{
+	this->_members.erase(username);
 }

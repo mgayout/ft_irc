@@ -24,3 +24,10 @@ const struct sockaddr_in	&Server::getSockstruct() {return this->_sockstruct;}
 const int					&Server::getPollfd(int idClient) {return this->_pfds[idClient].fd;}
 Client						*Server::getClient(int clientFd) {return this->_clients[clientFd];}
 Channel						*Server::getChannel(std::string channel) {return this->_channels[channel];}
+Client						*Server::getClientWithName(std::string username)
+{
+	for (unsigned int i = 1; i < this->getNbClient(); i++)
+		if (this->_clients[this->_pfds[i].fd]->getUsername() == username)
+			return this->_clients[this->_pfds[i].fd];
+	return NULL;
+}

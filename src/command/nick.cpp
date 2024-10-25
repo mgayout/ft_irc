@@ -24,7 +24,7 @@ std::string	Server::nick(std::vector<std::string> arg, Client *client)
 		{
 			client->setNickname(arg[1]);
 			client->setNick(true);
-			if (client->getAuthenticated())
+			if (client->isAuthenticated())
 				return (this->msg001(client) + \
 						this->msg002(client) + \
 						this->msg003(client) + \

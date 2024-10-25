@@ -27,9 +27,13 @@
 # include <set>
 # include <sstream>
 # include <ctime>
+# include <signal.h>
+# include <cstring>
 
+extern volatile sig_atomic_t ctrl;
+
+void						handleSignal(int signal);
 std::string					getCurrentDate();
-void						sendMessage(int fd, std::string msg);
 std::string					trim(const std::string& str);
 std::vector<std::string>	split(const std::string& str, char delimiter);
 

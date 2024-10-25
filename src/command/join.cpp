@@ -17,7 +17,7 @@ std::string	Server::join(std::vector<std::string> arg, Client *client)
 	std::vector<std::string>	channel, password;
 	std::string					msg;
 
-	if (!client->getAuthenticated())
+	if (!client->isAuthenticated())
 		return "";
 	else if (arg.size() == 1)
 		return this->msg461(client, "JOIN");

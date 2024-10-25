@@ -25,3 +25,4 @@ const bool					&Channel::getL() {return this->_l;}
 const unsigned int			&Channel::getMaxClient() {return this->_maxClient;}
 std::vector<std::string>	&Channel::getInvited() {return this->_invited;}
 std::map<std::string, bool>	&Channel::getMembers() {return this->_members;}
+int							Channel::getNbClient() {return this->_members.size();}
