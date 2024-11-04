@@ -12,50 +12,45 @@
 
 #include "../../include/Server.hpp"
 
-std::string	Server::part(std::vector<std::string> arg, Client *client)
+std::string	Server::part(std::vector<std::string> args, Client *client)
 {
+	Channel	*target;
+	std::vector<std::string>	channel;
+	std::string					message = "", msg = "";
+
 	if (!client->isAuthenticated())
 		return "";
-	for (size_t i = 0; i < arg.size(); i++)
+	else if (args.size() == 1)
+		return this->msg461(client, args[0]);
+	channel = split(args[1], ',');
+	for (unsigned int i = 2; i < args.size(); i++)
+		message += args[i] + " "; //erase last " ";
+	for (unsigned int i = 0; i < channel.size(); i++)
 	{
-		if (arg[i].at(0) != '#') 
+		target = this->getChannel(channel[i]);
+		if (!target)
 		{
-			//sendMessage(clientFd, "ERR_NOSUCHCHANNEL: Invalid channel name\n");
+			msg += this->msg476(client, channel[i]);
 			continue;
 		}
-		/*if (arg[i].find(" :") != std::string::npos)
-			partReason(arg[i], client);
+		else if (!target->isMember(client->getNickname()))
+		{
+			msg += this->msg476(client, channel[i]); //change 442 
+			continue;
+		}
+		msg += this->msgpart(client, channel[i], message);
+		if (target->getMembers().size() == 1)
+		{
+			target->clearAll();
+			client->removeChannel(target->getName());
+			this->removeChannel(target->getName());
+		}
 		else
-			partDefault(arg[i], client);*/
+		{
+			target->clearClient(client->getNickname());
+			client->removeChannel(target->getName());
+			this->sendChannel(target, msg);
+		}
 	}
-	return "";
+	return msg;
 }
-
-/*std::string	Server::partReason(std::string arg, Client *client)
-{
-	std::string channelName = arg.substr(0, arg.find(" "));
-	std::string reason = arg.substr(arg.find(" ") + 1);
-	std::string msg = client->getNickname() + " has left " + channelName +"(" + reason + ")";
-
-	if(this->_channels.find(arg) != this->_channels.end())
-	{
-		this->_channels[channelName]->removeMember(client);
-		this->_channels[channelName]->SendMessChan(msg, client);
-	}
-	else
-		sendMessage(client->getSocket(), "ERR_NOSUCHCHANNEL: Invalid channel name\n");
-	return "";
-}
-
-std::string	Server::partDefault(std::string arg, Client *client)
-{
-	std::string msg = client->getNickname() + " has left " + arg;
-	if(this->_channels.find(arg) != this->_channels.end())
-	{
-		this->_channels[arg]->removeMember(client);
-		_channels[arg]->SendMessChan(msg, client);
-	}
-	else
-		sendMessage(client->getSocket(), "ERR_NOSUCHCHANNEL: Invalid channel name\n");
-	return "";
-}*/

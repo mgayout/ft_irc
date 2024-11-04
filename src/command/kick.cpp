@@ -12,84 +12,33 @@
 
 #include "../../include/Server.hpp"
 
-std::string	Server::kick(std::vector<std::string> arg, Client *client)
+std::string Server::kick(std::vector<std::string> args, Client* client)
 {
-	if (!client->isAuthenticated())
-		return "";
-	for (size_t i = 0; i < arg.size(); i++)
-	{
-		if (arg[i].at(0) != '#') 
-		{
-			//sendMessage(clientFd, "ERR_NOSUCHCHANNEL: Invalid channel name\n");
-			continue;
-		}
-		/*if (arg[i].find(" :") != std::string::npos)
-			kickReason(arg[i], client);
-		else
-			kickDefault(arg[i], client);*/
-	}
-	return "";
+	Client		*target = this->getClientWithNick(args[2]);
+    std::string msg;
+
+    if (!client->isAuthenticated())
+        return "";
+    else if (args.size() < 3)
+        return this->msg461(client, args[0]);
+
+    std::string reason = args.size() > 3 ? args[3] : "";
+
+    if (args[1][0] != '#')
+        return this->msg403(client, args[1]);
+    else if (this->_channels.find(args[1]) == this->_channels.end())
+        return this->msg403(client, args[1]);
+    else if (!this->_channels[args[1]]->isOp(client->getNickname()))
+        return this->msg482(client, args[1]);
+    else if (!target || !this->_channels[args[1]]->isMember(target->getNickname()))
+        return this->msg441(client, args[2], args[1]);
+
+    this->_channels[args[1]]->removeMember(target->getNickname());
+    msg += ":" + client->getNickname() + " KICK " + args[1] + " " + args[2];
+    if (!reason.empty()) {
+        msg += " :" + reason;
+    }
+    msg += "\r\n";
+
+    return msg;
 }
-
-/*std::string	Server::kickReason(std::string arg, Client *client)
-{
-	std::string channelName = arg.substr(0, arg.find(" "));
-	std::string nickname = arg.substr(arg.find(" ") + 1, arg.find(" :") - (arg.find(" ") + 1));
-	std::string reason = arg.substr(arg.find(" :") + 2);
-
-	if (this->_channels.find(channelName) != this->_channels.end())
-	{
-		Channel* channel = this->_channels[channelName];
-
-		if (channel->isOP(client))
-		{
-			Client* targetClient = findClient(nickname);
-			if (targetClient && this->_channels[channelName]->isMember(targetClient))
-			{
-				channel->removeMember(targetClient);
-				channel->SendMessChan(nickname + " has been kicked by " + client->getNickname() + " (" + reason + ")\n", client);
-				sendMessage(targetClient->getSocket(), "You have been kicked from " + channelName + " by " + client->getNickname() + "\n");
-			}
-			else
-			{
-				sendMessage(client->getSocket(), "ERR_USERNOTINCHANNEL: User is not in the channel\n");
-			}
-		}
-		else
-			sendMessage(client->getSocket(), "ERR_CHANOPRIVSNEEDED: You're not channel operator\n");
-	}
-	else
-		sendMessage(client->getSocket(), "ERR_NOSUCHCHANNEL: Invalid channel name\n");
-	return "";
-}
-
-std::string	Server::kickDefault(std::string arg, Client *client)
-{
-	std::string channelName = arg.substr(0, arg.find(" "));
-	std::string nickname = arg.substr(arg.find(" ") + 1);
-
-	if (this->_channels.find(channelName) != this->_channels.end())
-	{
-		Channel* channel = this->_channels[channelName];
-
-		if (channel->isOP(client))
-		{
-			Client* targetClient = findClient(nickname);
-			if (targetClient && channel->isMember(targetClient))
-			{
-				channel->removeMember(targetClient);
-				//channel->SendMessChan(nickname + " has been kicked by " + this->_clients[clientFd]->getNickname(), this->_clients[clientFd] + "\n");
-				sendMessage(targetClient->getSocket(), "You have been kicked from " + channelName + " by " + client->getNickname() + "\n");
-			}
-			else
-			{
-				sendMessage(client->getSocket(), "ERR_USERNOTINCHANNEL: User is not in the channel\n");
-			}
-		}
-		else
-			sendMessage(client->getSocket(), "ERR_CHANOPRIVSNEEDED: You're not channel operator\n");
-	}
-	else
-		sendMessage(client->getSocket(), "ERR_NOSUCHCHANNEL: Invalid channel name\n");
-	return "";
-}*/

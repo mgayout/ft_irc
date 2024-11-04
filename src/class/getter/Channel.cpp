@@ -20,9 +20,8 @@ const std::string			&Channel::getTopicTime() {return this->_topicTime;}
 const std::string			&Channel::getDate() {return this->_date;}
 const bool					&Channel::getI() {return this->_i;}
 const bool					&Channel::getT() {return this->_t;}
-const bool					&Channel::getK() {return this->_k;}
-const bool					&Channel::getL() {return this->_l;}
 const unsigned int			&Channel::getMaxClient() {return this->_maxClient;}
 std::vector<std::string>	&Channel::getInvited() {return this->_invited;}
-std::map<std::string, bool>	&Channel::getMembers() {return this->_members;}
+std::vector<std::string>	&Channel::getMembers() {return this->_members;}
+std::vector<std::string>	&Channel::getOp() {return this->_op;}
 int							Channel::getNbClient() {return this->_members.size();}

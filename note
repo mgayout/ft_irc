@@ -1,0 +1,20 @@
+Invite :
+- msginvite()
+- msg443()
+
+Kick :
+
+- 441
+
+Mode :
+
+- 421
+
+
+pour moi :
+
+  nick doit être different pour tous mais pas le user
+
+  rechercher : sendClient
+
+  PRIVMSG = message vide + double prompt pour l'envoyeur

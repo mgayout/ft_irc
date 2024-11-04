@@ -39,7 +39,8 @@ class	Server
 			const int					&getPollfd(int idClient);
 			Client						*getClient(int clientFd);
 			Channel						*getChannel(std::string channel);
-			Client						*getClientWithName(std::string username);
+			Client						*getClientWithUser(std::string username);
+			Client						*getClientWithNick(std::string nickname);
 
 			void		createSocket();
 			void		launching();
@@ -50,10 +51,9 @@ class	Server
 
 			std::vector<std::string>	splitBuffer(std::string buf);
 			int							nicknameUsed(std::string nick);
-			int							usernameUsed(std::string user);
 			void						sendChannel(Channel *channel, std::string message);
 			void						sendAll(std::string username, std::string msg);
-			void						sendClient(Client *client, std::string message);
+			void						removeChannel(std::string channel);
 
 			# include "Command.hpp"
 			# include "Message.hpp"

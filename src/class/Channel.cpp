@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:14:52 by biaroun           #+#    #+#             */
-/*   Updated: 2024/10/22 10:05:14 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/11/01 16:04:12 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,33 +19,111 @@ Channel::Channel(Client *client, std::string name, std::string password)
 	this->_topic = "";
 	this->_i = false;
 	this->_t = false;
-	this->_k = false;
-	if (this->getPassword().size())
-		this->_k = true;
-	this->_l = false;
-	this->_maxClient = 1;
+	this->_maxClient = 0;
 	this->_date = getCurrentDate();
-    _members.insert(std::pair<std::string, bool>(client->getUsername(), true));
+    this->addMember(client->getNickname());
+	this->addOp(client->getNickname());
 }
 
 Channel::~Channel() {}
 
-bool	Channel::isInvited(std::string username)
+bool	Channel::isOp(std::string nickname)
 {
-	for (unsigned int i = 0; i < this->_invited.size(); i++)
+	for (unsigned int i = 0; i < this->_op.size(); i++)
 	{
-		if (this->_invited[i] == username)
+		if (this->_op[i] == nickname)
 			return true;
 	}
 	return false;
 }
 
-void	Channel::addClient(std::string username)
+bool	Channel::isInvited(std::string nickname)
 {
-	this->_members.insert(std::pair<std::string, bool>(username, false));
+	for (unsigned int i = 0; i < this->_invited.size(); i++)
+	{
+		if (this->_invited[i] == nickname)
+			return true;
+	}
+	return false;
 }
 
-void	Channel::removeClient(std::string username)
+bool	Channel::isMember(std::string nickname)
 {
-	this->_members.erase(username);
+	for (unsigned int i = 0; i < this->_members.size(); i++)
+	{
+		if (this->_members[i] == nickname)
+			return true;
+	}
+	return false;
+}
+
+void	Channel::addOp(std::string nickname)
+{
+	this->_op.push_back(nickname);
+}
+
+void	Channel::addInvited(std::string nickname)
+{
+	this->_invited.push_back(nickname);
+}
+
+void	Channel::addMember(std::string nickname)
+{
+	this->_members.push_back(nickname);
+}
+
+void	Channel::removeOp(std::string nickname)
+{
+	for (unsigned int i = 0; i < this->_op.size(); i++)
+		if (this->_op[i] == nickname)
+			this->_op.erase(this->_op.begin() + i);
+}
+
+void	Channel::removeInvited(std::string nickname)
+{
+	for (unsigned int i = 0; i < this->_invited.size(); i++)
+		if (this->_invited[i] == nickname)
+			this->_invited.erase(this->_invited.begin() + i);
+}
+
+void	Channel::removeMember(std::string nickname)
+{
+	for (unsigned int i = 0; i < this->_members.size(); i++)
+		if (this->_members[i] == nickname)
+			this->_members.erase(this->_members.begin() + i);
+}
+
+void	Channel::clearOp()
+{
+	for (unsigned int i = 0; i < this->_op.size(); i++)
+	{
+		std::cout << i << std::endl;
+		this->_op.erase(this->_op.begin() + i);
+	}
+}
+
+void	Channel::clearInvited()
+{
+	for (unsigned int i = 0; i < this->_invited.size(); i++)
+		this->_invited.erase(this->_invited.begin() + i);
+}
+
+void	Channel::clearMember()
+{
+	for (unsigned int i = 0; i < this->_members.size(); i++)
+		this->_members.erase(this->_members.begin() + i);
+}
+
+void	Channel::clearAll()
+{
+	this->clearOp();
+	this->clearInvited();
+	this->clearMember();
+}
+
+void	Channel::clearClient(std::string nickname)
+{
+	if (this->isOp(nickname))
+		removeOp(nickname);
+	removeMember(nickname);
 }

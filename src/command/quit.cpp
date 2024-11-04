@@ -20,14 +20,13 @@ std::string	Server::quit(std::vector<std::string> arg, Client *client)
 	if (!client->isAuthenticated())
 		return "";
 	else if (arg.size() > 1)
-		this->sendAll(client->getUsername(), this->msgquit(client, arg));
+		this->sendAll(client->getNickname(), this->msgquit(client, arg));
 	tmp = client->getChannel();
 	for (unsigned int i = 0; i < tmp.size(); i++)
 	{
-		this->_channels[tmp[i]]->removeClient(client->getUsername());
+		this->_channels[tmp[i]]->removeMember(client->getNickname());
 		if (!this->_channels[tmp[i]]->getNbClient())
 		{
-			std::cout << "salut" << std::endl;
 			delete this->_channels[tmp[i]];
 			this->_channels.erase(tmp[i]);
 		}

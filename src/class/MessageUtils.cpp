@@ -27,27 +27,28 @@ std::string	Server::msgclientschannel(std::string channel)
 	Channel	*tmp = this->getChannel(channel);
 	std::string msg;
 
-	for (std::map<std::string, bool>::iterator it = tmp->getMembers().begin(); it != tmp->getMembers().end(); ++it)
+	for (unsigned int i = 0; i < tmp->getMembers().size(); i++)
 	{
-		if (it->second)
-			msg += "@" + it->first;
+		if (tmp->isOp(tmp->getMembers()[i]))
+			msg += "@" + tmp->getMembers()[i];
 		else
-			msg += " " + it->first;
+			msg += " " + tmp->getMembers()[i];
 	}
 	return msg;
 }
 
-std::string	Server::msgmodechannel(std::string channel) //to complete
+std::string	Server::msgmodechannel(std::string channelname) //to complete
 {
+	Channel *channel = this->getChannel(channelname);
 	std::string msg;
 
-	if (this->getChannel(channel)->getI())
+	if (channel->getI())
 		msg += "i";
-	if (this->getChannel(channel)->getT())
+	if (channel->getT())
 		msg += "t";
-	if (this->getChannel(channel)->getK())
+	if (channel->getPassword().size())
 		msg += "k";
-	if (this->getChannel(channel)->getL())
+	if (channel->getMaxClient())
 		msg += "l";
 	return msg;
 }

@@ -30,18 +30,22 @@ std::string	Server::privmsg(std::vector<std::string> arg, Client *client)
 
 std::string	Server::privmsgChannel(std::string channel, std::string msg, Client *client)
 {
-	if (!this->getChannel(channel))
+	Channel	*target = this->getChannel(channel);
+
+	if (!target)
 		return "";
-	else if (!client->isConnected(channel))
+	else if (!target->isMember(client->getNickname()))
 		return "";
-	this->sendChannel(this->getChannel(channel), this->msgprivmsg(client, channel, msg));
+	this->sendChannel(target, this->msgprivmsg(client, channel, msg));
 	return "";
 }
 
-std::string	Server::privmsgClient(std::string target, std::string msg, Client *client)
+std::string	Server::privmsgClient(std::string target, std::string message, Client *client)
 {
-	if (!this->usernameUsed(target))
+	std::string	msg = this->msgprivmsg(client, target, message);
+
+	if (this->getClientWithNick(target))
 		return "";
-	this->sendClient(this->getClientWithName(target), this->msgprivmsg(client, target, msg));
+	send(this->getClientWithNick(target)->getSocket(), msg.c_str(), msg.size(), 0);
 	return "";
 }

@@ -124,13 +124,13 @@ void	Server::clientRequest(unsigned int idClient)
 
 std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 {
-	std::string	commands[17] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "OP", "DEOP", "PRIVMSG", "QUIT", "SENDFILE", "GETFILE", "BOT"};
+	std::string	commands[16] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "QUIT", "WHO", "SENDFILE", "GETFILE", "BOT"};
 	int			i = -1;
 
 	for (unsigned int j = 0; j < buffer.size(); j++)
 		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;
 
-	while (++i < 18)
+	while (++i < 17)
 		if (buffer[0] == commands[i])
 			break ;
 	std::cout << i << std::endl;
@@ -157,18 +157,16 @@ std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 	case 9:
 			return this->user(buffer, this->_clients[clientFd]);
 	case 10:
-			return this->op(buffer, this->_clients[clientFd]);
-	case 11:
-			return this->deop(buffer, this->_clients[clientFd]);
-	case 12:
 			return this->privmsg(buffer, this->_clients[clientFd]);
-	case 13:
+	case 11:
 			return this->quit(buffer, this->_clients[clientFd]);
-	case 14:
+	case 12:
+			return this->who(buffer, this->_clients[clientFd]);
+	case 13:
 			return this->sendfile(buffer, this->_clients[clientFd]);
-	case 15:
+	case 14:
 			return this->getfile(buffer, this->_clients[clientFd]);
-	case 16:
+	case 15:
 			return this->bot(buffer, this->_clients[clientFd]);
 	default:
 			return "";

@@ -20,7 +20,7 @@ std::string	Server::join(std::vector<std::string> arg, Client *client)
 	if (!client->isAuthenticated())
 		return "";
 	else if (arg.size() == 1)
-		return this->msg461(client, "JOIN");
+		return this->msg461(client, arg[0]);
 	channel = split(arg[1], ',');
 	if (arg.size() > 2)
 		password = split(arg[2], ',');
@@ -28,7 +28,6 @@ std::string	Server::join(std::vector<std::string> arg, Client *client)
 		password.push_back("");
 	for (unsigned int i = 0; i < channel.size(); i++)
 	{
-		std::cout << "i = " << i << std::endl;
 		if (password.size() < i)
 			password.push_back("");
 		if (channel[i][0] != '#')
@@ -40,33 +39,37 @@ std::string	Server::join(std::vector<std::string> arg, Client *client)
 			msg += this->createChannel(channel[i], password[i], client);
 		else
 			msg += this->joinChannel(channel[i], password[i], client);
+		if (this->_channels[channel[i]] && this->_channels[channel[i]]->getTopic() != "")
+			msg += this->msg332(client, this->_channels[channel[i]]) + this->msg333(client, this->_channels[channel[i]]);
 		msg += this->msg353(client, channel[i]) + this->msg366(client, channel[i]);
 	}
-	std::cout << msg << std::endl;
 	return msg;
 }
 
 std::string	Server::createChannel(std::string channel, std::string password, Client *client)
 {
 	this->_channels[channel] = new Channel(client, channel, password);
+	client->addChannel(channel);
 	return (this->msgjoin(client, channel) + \
 			this->msgjoinop(client, channel));
 }
 
-std::string	Server::joinChannel(std::string channel, std::string password, Client *client)
+std::string	Server::joinChannel(std::string channelname, std::string password, Client *client)
 {
+	Channel	*channel = this->getChannel(channelname);
 	std::string	msg = "";
 
-	if (this->getChannel(channel)->getI() && this->getChannel(channel)->isInvited(client->getUsername()))
-		return this->msg473(client, channel);
-	else if (this->getChannel(channel)->getK() && this->getChannel(channel)->getPassword() != password)
-		return this->msg475(client, channel);
-	else if (this->getChannel(channel)->getL() && this->getChannel(channel)->getMembers().size() == this->getChannel(channel)->getMaxClient())
-		return this->msg471(client, channel);
-	if (this->getChannel(channel)->getTopic().size())
-		msg = this->msg332(client, this->getChannel(channel)) + this->msg333(client, this->getChannel(channel));
-	this->sendChannel(this->getChannel(channel), this->msgjoin(client, channel));
-	this->getChannel(channel)->addClient(client->getUsername());
-	this->getClient(client->getSocket())->addChannel(channel);
-	return (this->msgjoin(client, channel) + msg);
+	if (channel->getI() && !channel->isInvited(client->getNickname()))
+		return this->msg473(client, channelname);
+	else if (channel->getPassword() != password)
+		return this->msg475(client, channelname);
+	else if (channel->getMaxClient() && channel->getMembers().size() >= channel->getMaxClient())
+		return this->msg471(client, channelname);
+	if (channel->getTopic().size())
+		msg = this->msg332(client, channel) + this->msg333(client, channel);
+	this->sendChannel(channel, this->msgjoin(client, channelname));
+	channel->addMember(client->getNickname());
+	channel->removeInvited(client->getNickname());
+	client->addChannel(channelname);
+	return (this->msgjoin(client, channelname) + msg);
 }

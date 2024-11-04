@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 14:18:12 by mgayout           #+#    #+#             */
-/*   Updated: 2024/10/25 16:51:53 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/11/01 15:52:49 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,7 @@ int	Server::nicknameUsed(std::string nick)
 {
 	for (unsigned int i = 1; i != this->_nbClient; i++)
 	{
-		if (this->_clients[this->_pfds[i].fd]->getNickname() == nick)
-			return this->_clients[this->_pfds[i].fd]->getSocket();
-	}
-	return 0;
-}
-
-int	Server::usernameUsed(std::string user)
-{
-	for (unsigned int i = 1; i != this->_nbClient; i++)
-	{
-		if (this->_clients[this->_pfds[i].fd]->getUsername() == user)
+		if (this->_clients[this->_pfds[i].fd]->getNickname() == nick && this->_clients[this->_pfds[i].fd]->getNick())
 			return this->_clients[this->_pfds[i].fd]->getSocket();
 	}
 	return 0;
@@ -58,22 +48,21 @@ int	Server::usernameUsed(std::string user)
 
 void	Server::sendChannel(Channel *channel, std::string message)
 {
-	for (std::map<std::string, bool>::iterator it = channel->getMembers().begin(); it != channel->getMembers().end(); ++it)
-		for (unsigned int i = 1; i < this->getNbClient(); i++)
-			if (this->_clients[this->_pfds[i].fd]->getUsername() == it->first)
-				send(this->_clients[this->_pfds[i].fd]->getSocket(), message.c_str(), message.size(), 0);
+	for (unsigned int i = 0; i < channel->getMembers().size(); i++)
+		for (unsigned int j = 1; j < this->getNbClient(); j++)
+			if (this->_clients[this->_pfds[j].fd]->getNickname() == channel->getMembers()[i])
+				send(this->_clients[this->_pfds[j].fd]->getSocket(), message.c_str(), message.size(), 0);
 }
 
 void	Server::sendAll(std::string username, std::string msg)
 {
 	for (unsigned int i = 1; i < this->getNbClient(); i++)
-		if (this->_clients[this->_pfds[i].fd]->getUsername() != username)
+		if (this->_clients[this->_pfds[i].fd]->getNickname() != username)
 			send(this->_clients[this->_pfds[i].fd]->getSocket(), msg.c_str(), msg.size(), 0);
 }
 
-void	Server::sendClient(Client *client, std::string message)
+void	Server::removeChannel(std::string channel)
 {
-	for (std::map<int, Client*>::iterator it = this->_clients.begin(); it != this->_clients.end(); ++it)
-		if (it->second->getUsername() == client->getUsername())
-			send(it->second->getSocket(), message.c_str(), message.size(), 0);
+	delete this->_channels[channel];
+	this->_channels.erase(channel);
 }

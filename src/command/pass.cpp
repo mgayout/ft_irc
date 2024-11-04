@@ -24,6 +24,6 @@ std::string	Server::pass(std::vector<std::string> arg, Client *client)
 			return this->msg464(client);
 	}
 	else
-		return this->msg461(client, "PASS");
+		return this->msg461(client, arg[0]);
 	return "";
 }

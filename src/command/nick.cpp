@@ -15,11 +15,14 @@
 std::string	Server::nick(std::vector<std::string> arg, Client *client)
 {
 	if (!client->getPwd())
-		return this->msg451(client, "NICK");
+		return this->msg451(client, arg[0]);
 	if (arg[1].size())
 	{
-		if (client->getNick())
+		if (client->isAuthenticated())
 			return this->msg462(client);
+		for (unsigned int i = 0; i < arg[1].size(); i++)
+			if (!(nicknameCharacter(arg[1][i])))
+				return this->msg432(client, arg[1]);
 		if (!this->nicknameUsed(arg[1]))
 		{
 			client->setNickname(arg[1]);
@@ -34,6 +37,11 @@ std::string	Server::nick(std::vector<std::string> arg, Client *client)
 			return this->msg433(client, arg[1]);
 	}
 	else
-		return this->msg461(client, "NICK");
+		return this->msg461(client, arg[0]);
 	return "";
+}
+
+bool	nicknameCharacter(const char c)
+{
+	return (isalnum(c) || c == '[' || c == ']' || c == '{' || c == '}' || c == '\\' || c == '|' || c == '_' || c == '-');
 }

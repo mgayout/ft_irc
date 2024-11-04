@@ -36,5 +36,6 @@ void						handleSignal(int signal);
 std::string					getCurrentDate();
 std::string					trim(const std::string& str);
 std::vector<std::string>	split(const std::string& str, char delimiter);
+bool						nicknameCharacter(const char c);
 
 #endif
