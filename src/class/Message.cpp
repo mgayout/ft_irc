@@ -122,8 +122,14 @@ std::string	Server::msg433(Client *client, std::string nickname) {
 	return msg;
 }
 
-std::string Server::msg441(Client* client, const std::string& nickname, const std::string& channel) {
-    return "441 " + client->getNickname() + " " + nickname + " " + channel + " :They are not on that channel\r\n";
+std::string Server::msg441(Client* client, std::string nickname, std::string channel) {
+	std::string msg = this->getServerPrefix(client, "441") + channel + " " + nickname + " " + " :They are not on that channel\r\n";
+	return msg;
+}
+
+std::string Server::msg442(Client* client, std::string channel) {
+    std::string msg = this->getServerPrefix(client, "442") + client->getNickname() + " " + channel + " :You are not on that channel\r\n";
+	return msg;
 }
 
 std::string	Server::msg443(Client *client, std::string nickname, std::string channel) {

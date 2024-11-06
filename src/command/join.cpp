@@ -39,6 +39,8 @@ std::string	Server::join(std::vector<std::string> arg, Client *client)
 			msg += this->createChannel(channel[i], password[i], client);
 		else
 			msg += this->joinChannel(channel[i], password[i], client);
+		if (!this->getChannel(channel[i])->isMember(client->getNickname()))
+			continue;
 		if (this->_channels[channel[i]] && this->_channels[channel[i]]->getTopic() != "")
 			msg += this->msg332(client, this->_channels[channel[i]]) + this->msg333(client, this->_channels[channel[i]]);
 		msg += this->msg353(client, channel[i]) + this->msg366(client, channel[i]);
@@ -67,7 +69,7 @@ std::string	Server::joinChannel(std::string channelname, std::string password, C
 		return this->msg471(client, channelname);
 	if (channel->getTopic().size())
 		msg = this->msg332(client, channel) + this->msg333(client, channel);
-	this->sendChannel(channel, this->msgjoin(client, channelname));
+	this->sendChannel(channelname, client->getNickname(), this->msgjoin(client, channelname));
 	channel->addMember(client->getNickname());
 	channel->removeInvited(client->getNickname());
 	client->addChannel(channelname);

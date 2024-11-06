@@ -35,7 +35,7 @@ std::string	Server::part(std::vector<std::string> args, Client *client)
 		}
 		else if (!target->isMember(client->getNickname()))
 		{
-			msg += this->msg476(client, channel[i]); //change 442 
+			msg += this->msg442(client, channel[i]);
 			continue;
 		}
 		msg += this->msgpart(client, channel[i], message);
@@ -49,7 +49,7 @@ std::string	Server::part(std::vector<std::string> args, Client *client)
 		{
 			target->clearClient(client->getNickname());
 			client->removeChannel(target->getName());
-			this->sendChannel(target, msg);
+			this->sendChannel(channel[i], client->getNickname(), msg);
 		}
 	}
 	return msg;

@@ -133,7 +133,6 @@ std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 	while (++i < 17)
 		if (buffer[0] == commands[i])
 			break ;
-	std::cout << i << std::endl;
 	switch (i)
 	{
 	case 0:

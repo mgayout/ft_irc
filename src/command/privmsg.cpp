@@ -12,19 +12,21 @@
 
 #include "../../include/Server.hpp"
 
-std::string	Server::privmsg(std::vector<std::string> arg, Client *client)
+std::string	Server::privmsg(std::vector<std::string> args, Client *client)
 {
 	std::string	msg = "";
 
+	for (unsigned int i = 0; i < args.size(); i++)
+		std::cout << "arg[" << i << "] = " << args[i] << std::endl;
 	if (!client->isAuthenticated())
 		return "";
-	else if (arg.size() < 3)
-	for (unsigned int i = 2; i < arg.size(); i++)
-		msg += arg[i] + " ";
-	if (arg[1][0] == '#')
-		return this->privmsgChannel(arg[1], msg, client);
+	else if (args.size() < 3)
+	for (unsigned int i = 2; i < args.size(); i++)
+		msg += args[i] + " ";
+	if (args[1][0] == '#')
+		return this->privmsgChannel(args[1], msg, client);
 	else
-		return this->privmsgClient(arg[1], msg, client);
+		return this->privmsgClient(args[1], msg, client);
 	return "";
 }
 
@@ -36,7 +38,7 @@ std::string	Server::privmsgChannel(std::string channel, std::string msg, Client 
 		return "";
 	else if (!target->isMember(client->getNickname()))
 		return "";
-	this->sendChannel(target, this->msgprivmsg(client, channel, msg));
+	this->sendChannel(channel, client->getNickname(), this->msgprivmsg(client, channel, msg));
 	return "";
 }
 
