@@ -103,8 +103,14 @@ void	Server::clientRequest(unsigned int idClient)
 	std::string	buf, msg;
 
 	bytes_received = recv(clientFd, buffer, sizeof(buffer), 0);
-	if (bytes_received <= 0)
-		throw (Server::RecvError());
+    if (bytes_received == 0)
+    {
+        std::cout << "[Server] Client disconnected" << std::endl;
+        close(clientFd);
+        _clients.erase(clientFd);
+    }
+    else if (bytes_received < 0)
+        throw (Server::RecvError());
 	else
 	{
 		buffer[bytes_received] = '\0';

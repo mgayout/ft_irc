@@ -20,9 +20,12 @@ std::string	Server::privmsg(std::vector<std::string> args, Client *client)
 		std::cout << "arg[" << i << "] = " << args[i] << std::endl;
 	if (!client->isAuthenticated())
 		return "";
-	else if (args.size() < 3)
 	for (unsigned int i = 2; i < args.size(); i++)
+	{
+		std::cout << "args[" << i << "] = " << args[i] << std::endl;
 		msg += args[i] + " ";
+	}
+	std::cout << "msg = " << msg << std::endl;
 	if (args[1][0] == '#')
 		return this->privmsgChannel(args[1], msg, client);
 	else

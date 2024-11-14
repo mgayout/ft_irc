@@ -217,7 +217,8 @@ std::string	Server::msgpart(Client *client, std::string channel, std::string mes
 }
 
 std::string Server::msgprivmsg(Client *client, std::string target, std::string message) {
-	std::string	msg = this->getUserPrefix(client) + "PRIVMSG " + target + " :" + message + "\n\r";
+	std::string	msg = this->getUserPrefix(client) + "PRIVMSG " + target + " " + message + "\n\r";
+	std::cout << "privmsg = " << msg << std::endl;
 	return msg;
 }
 
