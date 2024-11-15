@@ -6,35 +6,11 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 14:18:12 by mgayout           #+#    #+#             */
-/*   Updated: 2024/11/15 10:51:08 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/11/15 15:31:06 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/Server.hpp"
-
-std::vector<std::string>    Server::splitBuffer(std::string buf)
-{
-	std::vector<std::string>	command;
-	std::string					tmp;
-
-	for (unsigned int i = 0, j = 0; i != buf.size(); i++)
-	{
-		if (buf[i] == ' ')
-		{
-			tmp = buf.substr(j, i - j);
-			command.push_back(tmp);
-			j = i + 1;
-		}
-		else if (buf[i] == '\n')
-		{
-			tmp = buf.substr(j, i - (j + 1) );
-			command.push_back(tmp);
-			break;
-		}
-	}
-	
-	return command;
-}
 
 int	Server::nicknameUsed(std::string nick)
 {

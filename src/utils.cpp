@@ -38,7 +38,7 @@ std::string trim(const std::string& str) {
     return str.substr(start, end - start);
 }
 
-std::vector<std::string> split(const std::string& str, char delimiter)
+std::vector<std::string> split(const std::string& str, char delimiter, bool hexchat)
 {
 	std::vector<std::string>	tab;
 
@@ -46,8 +46,14 @@ std::vector<std::string> split(const std::string& str, char delimiter)
 	{
 		if (str[i] == delimiter || str[i] == '\0')
 		{
-			tab.push_back(str.substr(j, i - j));
-			j = i + 1;
+			//std::cout << "i = " << i << " et j = " << j << std::endl;
+			//std::cout << "i = " << str[i] << " et j = " << str[j] << std::endl;
+			if (str[i] == '\0' && hexchat)
+				tab.push_back(str.substr(j, i - (j + 1)));
+			else
+				tab.push_back(str.substr(j, i - j));
+			i++;
+			j = i;
 		}
 	}
     return tab;

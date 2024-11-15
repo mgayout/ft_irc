@@ -97,10 +97,11 @@ void	Server::addClient()
 
 void	Server::clientRequest(unsigned int idClient)
 {
-	int			clientFd = this->getPollfd(idClient);
-	char		buffer[1024];
-	int			bytes_received, line = 0;
-	std::string	buf, msg;
+	std::vector<std::string>	cmd;
+	std::string					msg, buf;
+	int							clientFd = this->getPollfd(idClient);
+	char						buffer[1024];
+	int							bytes_received;
 
 	bytes_received = recv(clientFd, buffer, sizeof(buffer), 0);
     if (bytes_received == 0)
@@ -108,27 +109,24 @@ void	Server::clientRequest(unsigned int idClient)
         std::cout << "[Server] Client disconnected" << std::endl;
         close(clientFd);
         _clients.erase(clientFd);
-    }
-    else if (bytes_received < 0)
-        throw (Server::RecvError());
-	else
+    }  
+	else if (bytes_received)
 	{
 		buffer[bytes_received] = '\0';
 		buf = buffer;
-		for (int i = 0; i < bytes_received; i++)
-			if (buf[i] == '\n')
-				line++;
-		for (int i = 0; i != line; i++)
+		//buf.erase(std::remove(buf.begin(), buf.end(), '\r'), buf.end());
+		cmd = split(buffer, '\n', this->_clients[clientFd]->getHexchat());
+		for (unsigned int i = 0; i < cmd.size(); i++)
 		{
-			msg = this->commands(this->splitBuffer(buf), clientFd);
+			std::cout << "cmd[" << i << "] = " << cmd[i] << std::endl;
+			msg = this->commands(split(cmd[i], ' ', this->_clients[clientFd]->getHexchat()), clientFd);
 			if (msg.size())
-			{
-				std::cout << msg << std::endl;
 				send(clientFd, msg.c_str(), msg.size(), 0);
-			}
-			buf = buf.substr(buf.find('\n') + 1);
+			std::cout << msg << std::endl;
 		}
 	}
+	else
+		throw (Server::RecvError());
 }
 
 std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
@@ -137,8 +135,7 @@ std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 	int			i = -1;
 
 	for (unsigned int j = 0; j < buffer.size(); j++)
-		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;
-
+		std::cout << "buffer[" << j << "] = " << buffer[j] << " et size = " << buffer[j].size() << std::endl;
 	while (++i < 19)
 		if (buffer[0] == commands[i])
 			break ;

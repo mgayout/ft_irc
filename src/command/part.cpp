@@ -22,7 +22,7 @@ std::string	Server::part(std::vector<std::string> args, Client *client)
 		return "";
 	else if (args.size() == 1)
 		return this->msg461(client, args[0]);
-	channel = split(args[1], ',');
+	channel = split(args[1], ',', false);
 	for (unsigned int i = 2; i < args.size(); i++)
 		message += args[i] + " "; //erase last " ";
 	for (unsigned int i = 0; i < channel.size(); i++)

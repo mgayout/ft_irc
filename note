@@ -14,9 +14,8 @@ Test :
 
 ----------------------------------------------------------------------------------
 
-Error 1 :
-- Client 1 join channel, mode + k 123 4
-- Client 2 join channel 123
-
 Error 2 :
 - Supprimer le dernieres espaces lors des join messages
+
+Error 3 :
+terminal dernier caractere

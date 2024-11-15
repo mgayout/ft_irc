@@ -14,7 +14,7 @@
 
 std::string	Server::join(std::vector<std::string> arg, Client *client)
 {
-	std::vector<std::string>	args = split(arg[1], ',');
+	std::vector<std::string>	args = split(arg[1], ',', false);
 	std::string					channel, password, msg;
 
 	if (!client->isAuthenticated())
