@@ -32,8 +32,36 @@ std::string	Server::msg004(Client *client) {
 	return msg;
 }
 
+std::string	Server::msg307(Client *client, std::string target) {
+	std::string	msg = this->getServerPrefix(client, "307") + target + " :has identified for this nick\r\n";
+	return msg;
+}
+
+std::string	Server::msg311(Client *client, Client *target) {
+	std::string	msg = this->getServerPrefix(client, "311") + target->getNickname() + " " + target->getUsername() + " * :" + target->getRealname() + "\r\n";
+	return msg;
+}
+
+std::string	Server::msg312(Client *client, std::string target) {
+	std::string	msg = this->getServerPrefix(client, "312") + target + " " + this->getHostname() + " :Some IRC Server\r\n";
+	return msg;
+}
+
 std::string	Server::msg315(Client *client, std::string target) {
 	std::string	msg = this->getServerPrefix(client, "315") + target + " :End of WHO list\r\n";
+	return msg;
+}
+
+std::string	Server::msg319(Client *client, std::string target) {
+	std::string	msg = this->getServerPrefix(client, "319") + " :";
+	
+	for (unsigned int i = 0; i < this->getClientWithNick(target)->getChannel().size(); i++)
+	{
+		if (this->getChannel(this->getClientWithNick(target)->getChannel()[i])->isOp(target))
+			msg += "@";
+		msg += this->getClientWithNick(target)->getChannel()[i] + " ";
+	}
+	msg += "\r\n";
 	return msg;
 }
 
@@ -73,14 +101,14 @@ std::string	Server::msg352(Client *client, std::string target)
 		{
 			Client	*clientTarget = this->getClientWithNick(channelTarget->getMembers()[i]);
 			if (channelTarget->isOp(channelTarget->getMembers()[i]))
-				msg += this->getServerPrefix(client, "352") + channelTarget->getName() + " " + clientTarget->getUsername() + " " + clientTarget->getNickname() + " H :0 " + clientTarget->getRealname() + "\r\n";
+				msg += this->getServerPrefix(client, "352") + channelTarget->getName() + " " + clientTarget->getUsername() + " " + clientTarget->getNickname() + " H@ :0 " + clientTarget->getRealname() + "\r\n";
 			else
-				msg += this->getServerPrefix(client, "352") +  + "\r\n";
+				msg += this->getServerPrefix(client, "352") + channelTarget->getName() + " " + clientTarget->getUsername() + " " + clientTarget->getNickname() + " H :0 " + clientTarget->getRealname() + "\r\n";
 		}
 	}
 	else
 	{
-		Client	*clientTarget = this->getClientWithUser(target);
+		Client	*clientTarget = this->getClientWithNick(target);
 		msg = this->getServerPrefix(client, "352") + "* " + clientTarget->getUsername() + " " + this->getHostname() + " " + this->getHostname() + " " + clientTarget->getNickname() + " H :0 " + clientTarget->getRealname() + "\r\n";
 	}
 	return msg;

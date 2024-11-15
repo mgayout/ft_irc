@@ -36,12 +36,30 @@ std::string	Server::who(std::vector<std::string> arg, Client *client)
 	}
 	else
 	{
-		if (!this->nicknameUsed(arg[1]))
+		if (!this->getClientWithNick(arg[1]))
 			msg = this->msg401(client, arg[1]);
 		else
 			msg = this->msg352(client, arg[1]) + this->msg315(client, arg[1]);
 	}
 	return msg;
+}
+
+std::string	Server::whois(std::vector<std::string> arg, Client *client)
+{
+	std::string	msg;
+
+	if (!client->isAuthenticated())
+		return "";
+	else if (arg.size() == 1)
+		return this->msg461(client, arg[0]);
+	else if (arg.size() == 3)
+		return this->msg403(client, arg[1]);
+	else if (!this->getClientWithNick(arg[1]))
+		return "";
+	return	this->msg307(client, arg[1]) + \
+			this->msg311(client, this->getClientWithNick(arg[1])) + \
+			this->msg312(client, arg[1]) + \
+			this->msg319(client, arg[1]);
 }
 
 std::string	Server::sendfile(std::vector<std::string> arg, Client *client)

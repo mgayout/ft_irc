@@ -37,8 +37,8 @@ std::string		user(std::vector<std::string> arg, Client *client);
 
 std::string		msgpart(Client *client, std::string channel, std::string message);
 
-std::string		privmsg(std::vector<std::string> arg, Client *client);
-std::string		privmsgChannel(std::string channel, std::string msg, Client *client);
+std::string		privmsg(std::vector<std::string> arg, Client *client, bool sendme);
+std::string		privmsgChannel(std::string channel, std::string msg, Client *client, bool sendme);
 std::string		privmsgClient(std::string target, std::string msg, Client *client);
 
 std::string		quit(std::vector<std::string> arg, Client *client);
@@ -48,5 +48,6 @@ std::string		getfile(std::vector<std::string> arg, Client *client);
 std::string		bot(std::vector<std::string> arg, Client *client);
 
 std::string		who(std::vector<std::string> arg, Client *client);
+std::string		whois(std::vector<std::string> arg, Client *client);
 
 #endif

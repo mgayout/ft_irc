@@ -12,28 +12,24 @@
 
 #include "../../include/Server.hpp"
 
-std::string	Server::privmsg(std::vector<std::string> args, Client *client)
+std::string	Server::privmsg(std::vector<std::string> args, Client *client, bool sendme)
 {
 	std::string	msg = "";
 
-	for (unsigned int i = 0; i < args.size(); i++)
-		std::cout << "arg[" << i << "] = " << args[i] << std::endl;
 	if (!client->isAuthenticated())
 		return "";
 	for (unsigned int i = 2; i < args.size(); i++)
-	{
-		std::cout << "args[" << i << "] = " << args[i] << std::endl;
 		msg += args[i] + " ";
-	}
-	std::cout << "msg = " << msg << std::endl;
+	if (msg[0] != ':')
+		msg = "";
 	if (args[1][0] == '#')
-		return this->privmsgChannel(args[1], msg, client);
+		return this->privmsgChannel(args[1], msg, client, sendme);
 	else
 		return this->privmsgClient(args[1], msg, client);
 	return "";
 }
 
-std::string	Server::privmsgChannel(std::string channel, std::string msg, Client *client)
+std::string	Server::privmsgChannel(std::string channel, std::string msg, Client *client, bool sendme)
 {
 	Channel	*target = this->getChannel(channel);
 
@@ -41,7 +37,7 @@ std::string	Server::privmsgChannel(std::string channel, std::string msg, Client 
 		return "";
 	else if (!target->isMember(client->getNickname()))
 		return "";
-	this->sendChannel(channel, client->getNickname(), this->msgprivmsg(client, channel, msg));
+	this->sendChannel(channel, client->getNickname(), this->msgprivmsg(client, channel, msg), sendme);
 	return "";
 }
 
@@ -49,7 +45,7 @@ std::string	Server::privmsgClient(std::string target, std::string message, Clien
 {
 	std::string	msg = this->msgprivmsg(client, target, message);
 
-	if (this->getClientWithNick(target))
+	if (!this->getClientWithNick(target))
 		return "";
 	send(this->getClientWithNick(target)->getSocket(), msg.c_str(), msg.size(), 0);
 	return "";

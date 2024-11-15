@@ -51,7 +51,7 @@ class	Server
 
 			std::vector<std::string>	splitBuffer(std::string buf);
 			int							nicknameUsed(std::string nick);
-			void						sendChannel(std::string channelname, std::string sender, std::string message);
+			void						sendChannel(std::string channelname, std::string sender, std::string message, bool sendme);
 			void						sendAll(std::string username, std::string msg);
 			void						removeChannel(std::string channel);
 

@@ -47,7 +47,7 @@ std::vector<std::string> split(const std::string& str, char delimiter)
 		if (str[i] == delimiter || str[i] == '\0')
 		{
 			tab.push_back(str.substr(j, i - j));
-			j = i;
+			j = i + 1;
 		}
 	}
     return tab;

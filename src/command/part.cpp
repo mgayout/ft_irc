@@ -49,7 +49,7 @@ std::string	Server::part(std::vector<std::string> args, Client *client)
 		{
 			target->clearClient(client->getNickname());
 			client->removeChannel(target->getName());
-			this->sendChannel(channel[i], client->getNickname(), msg);
+			this->sendChannel(channel[i], client->getNickname(), msg, true);
 		}
 	}
 	return msg;

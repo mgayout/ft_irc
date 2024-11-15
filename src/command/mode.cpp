@@ -26,8 +26,6 @@ std::string Server::mode(std::vector<std::string> args, Client *client)
 		return this->msg324(client, args[1]) + this->msg329(client, this->getChannel(args[1]));
 	else if (!this->getChannel(args[1])->isOp(client->getNickname()))
 		return this->msg482(client, args[1]);
-	/*if ((args.size() > 3 && (!((args[2][0] == '+' && args[2][0] == 'k') || ((args[2][0] == '+' || args[2][0] == '-') && args[2][1] == 'o') || (args[2][0] == '+' && args[2][0] == 'i')))) || args[2].size() != 2)
-		return this->msg421(client, args[0]);*/
 	channel = this->getChannel(args[1]);
 	if (args[2] == "+i" && args.size() == 3)
 		channel->setI(true);
@@ -37,10 +35,14 @@ std::string Server::mode(std::vector<std::string> args, Client *client)
 		channel->clearInvited();
 	}
 	else if (args[2] == "+k" && args.size() == 4)
+	{
+		if (args[3][0] == '#')
+			return this->msg475(client, args[1]);
 		channel->setPassword(args[3]);
+	}
 	else if (args[2] == "-k" && args.size() == 3)
 		channel->setPassword("");
-	else if (args[2] == "+l" && atoi(args[3].c_str()) > 0 && args.size() == 4)
+	else if (args[2] == "+l" && args.size() == 4 && atoi(args[3].c_str()) > 0)
 		channel->setMaxClient(atoi(args[3].c_str()));
 	else if (args[2] == "-l" && args.size() == 3)
 		channel->setMaxClient(-1);
@@ -54,7 +56,7 @@ std::string Server::mode(std::vector<std::string> args, Client *client)
 		channel->setT(true);
 	else
 		return msg472(client, args[2]);
-	this->sendChannel(channel->getName(), client->getNickname(), this->msgmode(client, args));
+	this->sendChannel(channel->getName(), client->getNickname(), this->msgmode(client, args), true);
 	return this->msgmode(client, args);
 }
 

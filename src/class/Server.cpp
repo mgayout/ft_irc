@@ -122,7 +122,10 @@ void	Server::clientRequest(unsigned int idClient)
 		{
 			msg = this->commands(this->splitBuffer(buf), clientFd);
 			if (msg.size())
+			{
+				std::cout << msg << std::endl;
 				send(clientFd, msg.c_str(), msg.size(), 0);
+			}
 			buf = buf.substr(buf.find('\n') + 1);
 		}
 	}
@@ -130,13 +133,13 @@ void	Server::clientRequest(unsigned int idClient)
 
 std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 {
-	std::string	commands[16] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "QUIT", "WHO", "SENDFILE", "GETFILE", "BOT"};
+	std::string	commands[18] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "privmsg", "QUIT", "WHO", "WHOIS", "SENDFILE", "GETFILE", "BOT"};
 	int			i = -1;
 
 	for (unsigned int j = 0; j < buffer.size(); j++)
 		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;
 
-	while (++i < 17)
+	while (++i < 19)
 		if (buffer[0] == commands[i])
 			break ;
 	switch (i)
@@ -162,16 +165,20 @@ std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
 	case 9:
 			return this->user(buffer, this->_clients[clientFd]);
 	case 10:
-			return this->privmsg(buffer, this->_clients[clientFd]);
+			return this->privmsg(buffer, this->_clients[clientFd], false);
 	case 11:
-			return this->quit(buffer, this->_clients[clientFd]);
+			return this->privmsg(buffer, this->_clients[clientFd], true);
 	case 12:
-			return this->who(buffer, this->_clients[clientFd]);
+			return this->quit(buffer, this->_clients[clientFd]);
 	case 13:
-			return this->sendfile(buffer, this->_clients[clientFd]);
+			return this->who(buffer, this->_clients[clientFd]);
 	case 14:
-			return this->getfile(buffer, this->_clients[clientFd]);
+			return this->whois(buffer, this->_clients[clientFd]);
 	case 15:
+			return this->sendfile(buffer, this->_clients[clientFd]);
+	case 16:
+			return this->getfile(buffer, this->_clients[clientFd]);
+	case 17:
 			return this->bot(buffer, this->_clients[clientFd]);
 	default:
 			return "";

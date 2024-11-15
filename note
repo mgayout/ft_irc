@@ -1,0 +1,22 @@
+Test :
+
+- JOIN
+- INVITE
+- MODE IOKL / T = pas test
+- NICK
+- USER
+- PASS
+- PART
+- PRIVMSG = error 1er msg
+- QUIT
+- 
+
+
+----------------------------------------------------------------------------------
+
+Error 1 :
+- Client 1 join channel, mode + k 123 4
+- Client 2 join channel 123
+
+Error 2 :
+- Supprimer le dernieres espaces lors des join messages

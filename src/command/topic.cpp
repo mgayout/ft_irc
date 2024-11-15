@@ -45,6 +45,6 @@ std::string Server::topic(std::vector<std::string> args, Client *client)
         return this->msg482(client, channelName);
 
     channel->setTopic(newTopic);
-    this->sendChannel(channelName, client->getNickname(), "TOPIC " + channel->getName() + " :" + newTopic);
+    this->sendChannel(channelName, client->getNickname(), "TOPIC " + channel->getName() + " :" + newTopic, true);
     return ("TOPIC " + channel->getName() + " :" + newTopic);
 }

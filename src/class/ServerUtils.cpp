@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 14:18:12 by mgayout           #+#    #+#             */
-/*   Updated: 2024/11/05 11:41:49 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/11/15 10:51:08 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,15 @@ int	Server::nicknameUsed(std::string nick)
 	return 0;
 }
 
-void	Server::sendChannel(std::string channelname, std::string sender, std::string message)
+void	Server::sendChannel(std::string channelname, std::string sender, std::string message, bool sendme)
 {
 	Channel	*channel = getChannel(channelname);
 
 	for (unsigned int i = 0; i < channel->getMembers().size(); i++)
 		for (unsigned int j = 1; j < this->getNbClient(); j++)
-			if (this->_clients[this->_pfds[j].fd]->getNickname() == channel->getMembers()[i] && channel->getMembers()[i] != sender)
-				send(this->_clients[this->_pfds[j].fd]->getSocket(), message.c_str(), message.size(), 0);
+			if (this->_clients[this->_pfds[j].fd]->getNickname() == channel->getMembers()[i])
+				if (sendme || (!sendme && channel->getMembers()[i] != sender))
+					send(this->_clients[this->_pfds[j].fd]->getSocket(), message.c_str(), message.size(), 0);
 }
 
 void	Server::sendAll(std::string username, std::string msg)
