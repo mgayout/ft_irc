@@ -49,7 +49,6 @@ class	Server
 			std::string	commands(std::vector<std::string> command, int clientFd);
 			void		closeServer();
 
-			std::vector<std::string>	splitBuffer(std::string buf);
 			int							nicknameUsed(std::string nick);
 			void						sendChannel(std::string channelname, std::string sender, std::string message, bool sendme);
 			void						sendAll(std::string username, std::string msg);
@@ -73,6 +72,7 @@ class	Server
 			int									_socket;
 			struct sockaddr_in					_sockstruct;
 			std::map<std::string, Channel *>	_channels;
+			bool								_bot;
 };
 
 #endif

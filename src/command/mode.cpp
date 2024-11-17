@@ -57,6 +57,6 @@ std::string Server::mode(std::vector<std::string> args, Client *client)
 	else
 		return msg472(client, args[2]);
 	this->sendChannel(channel->getName(), client->getNickname(), this->msgmode(client, args), true);
-	return this->msgmode(client, args);
+	return "";
 }
 

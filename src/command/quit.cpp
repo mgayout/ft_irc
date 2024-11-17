@@ -38,6 +38,7 @@ std::string	Server::quit(std::vector<std::string> arg, Client *client)
 	for (unsigned int i = 1; i < this->_pfds.size(); i++)
 		if (this->_pfds[i].fd == fd)
 			this->_pfds.erase(this->_pfds.begin() + i);
-	this->_nbClient--;
+	if (arg.size())
+		this->_nbClient--;
 	return "";
 }

@@ -79,12 +79,3 @@ std::string	Server::getfile(std::vector<std::string> arg, Client *client)
 	std::cout << "getfile \"" << arg[1] << "\"\n";
 	return "";
 }
-
-std::string	Server::bot(std::vector<std::string> arg, Client *client)
-{
-	if (!client->isAuthenticated())
-		return "";
-	
-	std::cout << "bot \"" << arg[1] << "\"\n";
-	return "";
-}

@@ -191,6 +191,5 @@ void	Server::closeServer()
 		this->quit(null, this->_clients[this->_pfds[i].fd]);
 	this->_pfds.erase(this->_pfds.begin());
 	close(this->getSocket());
-	shutdown(this->getSocket(), SHUT_RDWR);
 	std::cout << "\nBye !" << std::endl;
 }

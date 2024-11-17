@@ -1,21 +1,23 @@
-Test :
+A Faire :
 
-- JOIN
-- INVITE
-- MODE IOKL / T = pas test
-- NICK
-- USER
-- PASS
-- PART
-- PRIVMSG = error 1er msg
-- QUIT
-- 
+- Gestion des ctrl + D
+- Refaire topic
+- PING / PONG
 
+Bonus :
+
+- GETFILE
+- BOT = BOT #a, shifumi perdant quitte le canal
 
 ----------------------------------------------------------------------------------
 
-Error 2 :
-- Supprimer le dernieres espaces lors des join messages
+A Tester :
 
-Error 3 :
-terminal dernier caractere
+- TOPIC
+- MODE +/- T
+- KICK
+
+----------------------------------------------------------------------------------
+
+Error :
+- Supprimer le dernieres espaces lors des join messages
