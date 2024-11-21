@@ -13,7 +13,6 @@
 #include "../../../include/Client.hpp"
 
 const int					&Client::getSocket() {return this->_socket;}
-const struct sockaddr_in	&Client::getSockstruct() {return this->_sockstruct;}
 const std::string			&Client::getNickname() {return this->_nickname;}
 const std::string			&Client::getUsername() {return this->_username;}
 const std::string			&Client::getRealname() {return this->_realname;}

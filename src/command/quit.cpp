@@ -17,9 +17,7 @@ std::string	Server::quit(std::vector<std::string> arg, Client *client)
 	std::vector<std::string>	tmp;
 	int							fd;
 
-	if (!client->isAuthenticated())
-		return "";
-	else if (arg.size() > 1)
+	if (arg.size() > 1 && client->isAuthenticated())
 		this->sendAll(client->getNickname(), this->msgquit(client, arg));
 	tmp = client->getChannel();
 	for (unsigned int i = 0; i < tmp.size(); i++)

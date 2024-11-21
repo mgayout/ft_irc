@@ -42,12 +42,12 @@ class	Server
 			Client						*getClientWithUser(std::string username);
 			Client						*getClientWithNick(std::string nickname);
 
-			void		createSocket();
-			void		launching();
-			void		addClient();
-			void		clientRequest(unsigned int idClient);
-			std::string	commands(std::vector<std::string> command, int clientFd);
-			void		closeServer();
+			void						createSocket();
+			void						launching();
+			void						addClient();
+			void						clientRequest(unsigned int idClient);
+			std::string					commands(std::vector<std::string> command, Client *client);
+			void						closeServer();
 
 			int							nicknameUsed(std::string nick);
 			void						sendChannel(std::string channelname, std::string sender, std::string message, bool sendme);
@@ -72,7 +72,6 @@ class	Server
 			int									_socket;
 			struct sockaddr_in					_sockstruct;
 			std::map<std::string, Channel *>	_channels;
-			bool								_bot;
 };
 
 #endif

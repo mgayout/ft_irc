@@ -259,3 +259,26 @@ std::string	Server::msgquit(Client *client, std::vector<std::string> arg) {
 	msg = this->getUserPrefix(client) + "QUIT :Quit: " + msg + "\r\n";
 	return msg;
 }
+
+std::string	Server::msgkick(Client *client, std::vector<std::string> arg) {
+	std::string msg;
+	
+	for (unsigned int i = 3; i < arg.size(); i++)
+		msg += arg[i] + " ";
+	if (msg.size())
+		msg.erase(msg.size() - 1, 1);
+	msg = this->getUserPrefix(client) + "KICK " + arg[1] + " " + arg[2] + msg + "\r\n";
+	return msg;
+}
+
+std::string	Server::msgtopic(Client *client, std::string channel, std::string message) {
+	std::string msg;
+	msg = this->getUserPrefix(client) + "TOPIC " + channel + " " + message + "\r\n";
+	return msg;
+}
+
+std::string	Server::msgping(Client *client, std::string pingValue) {
+	std::string msg;
+	msg = this->getUserPrefix(client) + "PONG " + pingValue + "\r\n";
+	return msg;
+}

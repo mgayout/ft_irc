@@ -55,7 +55,10 @@ std::string	msgjoin(Client *client, std::string channel);
 std::string	msgjoinop(Client *client, std::string channel);
 std::string	msgmode(Client *client, std::vector<std::string> args);
 std::string	msgquit(Client *client, std::vector<std::string> arg);
+std::string	msgkick(Client *client, std::vector<std::string> arg);
 std::string	msgprivmsg(Client *client, std::string target, std::string message);
+std::string	msgtopic(Client *client, std::string channel, std::string message);
+std::string	msgping(Client *client, std::string pingValue);
 
 std::string	getUserPrefix(Client *client);
 std::string	getServerPrefix(Client *client, std::string code);

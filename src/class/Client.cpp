@@ -12,10 +12,9 @@
 
 #include "../../include/Client.hpp"
 
-Client::Client(int clientFd, struct sockaddr_in sockstruct)
+Client::Client(int clientFd)
 {
 	this->_socket = clientFd;
-	this->_sockstruct = sockstruct;
 	this->_nickname = "*";
 	this->_username = "*";
 	this->_realname = "*";

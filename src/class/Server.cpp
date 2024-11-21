@@ -89,7 +89,7 @@ void	Server::addClient()
 	{
 		this->_pfdstmp.fd = clientFd;
 		this->_pfds.push_back(this->_pfdstmp);
-		this->_clients.insert(std::pair<int, Client *>(clientFd, new Client(clientFd, sockstruct)));
+		this->_clients.insert(std::pair<int, Client *>(clientFd, new Client(clientFd)));
 		std::cout << "[Server] New client has been add" << std::endl;
 		this->_nbClient++;
 	}
@@ -104,22 +104,17 @@ void	Server::clientRequest(unsigned int idClient)
 	int							bytes_received;
 
 	bytes_received = recv(clientFd, buffer, sizeof(buffer), 0);
-    if (bytes_received == 0)
-    {
-        std::cout << "[Server] Client disconnected" << std::endl;
-        close(clientFd);
-        _clients.erase(clientFd);
-    }  
+    if (!bytes_received)
+        this->quit(split("QUIT", ' ', this->_clients[clientFd]->getHexchat()), this->_clients[clientFd]);
 	else if (bytes_received)
 	{
 		buffer[bytes_received] = '\0';
 		buf = buffer;
-		//buf.erase(std::remove(buf.begin(), buf.end(), '\r'), buf.end());
 		cmd = split(buffer, '\n', this->_clients[clientFd]->getHexchat());
 		for (unsigned int i = 0; i < cmd.size(); i++)
 		{
 			std::cout << "cmd[" << i << "] = " << cmd[i] << std::endl;
-			msg = this->commands(split(cmd[i], ' ', this->_clients[clientFd]->getHexchat()), clientFd);
+			msg = this->commands(split(cmd[i], ' ', this->_clients[clientFd]->getHexchat()), this->_clients[clientFd]);
 			if (msg.size())
 				send(clientFd, msg.c_str(), msg.size(), 0);
 			std::cout << msg << std::endl;
@@ -129,54 +124,56 @@ void	Server::clientRequest(unsigned int idClient)
 		throw (Server::RecvError());
 }
 
-std::string	Server::commands(std::vector<std::string> buffer, int clientFd)
+std::string	Server::commands(std::vector<std::string> buffer, Client *client)
 {
-	std::string	commands[18] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "privmsg", "QUIT", "WHO", "WHOIS", "SENDFILE", "GETFILE", "BOT"};
+	std::string	commands[19] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "privmsg", "QUIT", "WHO", "WHOIS", "SENDFILE", "GETFILE", "NOTICE", "PING"};
 	int			i = -1;
 
 	for (unsigned int j = 0; j < buffer.size(); j++)
-		std::cout << "buffer[" << j << "] = " << buffer[j] << " et size = " << buffer[j].size() << std::endl;
-	while (++i < 19)
+		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;
+	while (++i < 20)
 		if (buffer[0] == commands[i])
 			break ;
 	switch (i)
 	{
 	case 0:
-			return this->join(buffer, this->_clients[clientFd]);
+			return this->join(buffer, client);
 	case 1:
-			return this->part(buffer, this->_clients[clientFd]);
+			return this->part(buffer, client);
 	case 2:
-			return this->kick(buffer, this->_clients[clientFd]);
+			return this->kick(buffer, client);
 	case 3:
-			return this->invite(buffer, this->_clients[clientFd]);
+			return this->invite(buffer, client);
 	case 4:
-			return this->topic(buffer, this->_clients[clientFd]);
+			return this->topic(buffer, client);
 	case 5:
-			return this->mode(buffer, this->_clients[clientFd]);
+			return this->mode(buffer, client);
 	case 6:
-			return this->cap(this->_clients[clientFd]);
+			return this->cap(client);
 	case 7:
-			return this->pass(buffer, this->_clients[clientFd]);
+			return this->pass(buffer, client);
 	case 8:
-			return this->nick(buffer, this->_clients[clientFd]);
+			return this->nick(buffer, client);
 	case 9:
-			return this->user(buffer, this->_clients[clientFd]);
+			return this->user(buffer, client);
 	case 10:
-			return this->privmsg(buffer, this->_clients[clientFd], false);
+			return this->privmsg(buffer, client, false);
 	case 11:
-			return this->privmsg(buffer, this->_clients[clientFd], true);
+			return this->privmsg(buffer, client, true);
 	case 12:
-			return this->quit(buffer, this->_clients[clientFd]);
+			return this->quit(buffer, client);
 	case 13:
-			return this->who(buffer, this->_clients[clientFd]);
+			return this->who(buffer, client);
 	case 14:
-			return this->whois(buffer, this->_clients[clientFd]);
+			return this->whois(buffer, client);
 	case 15:
-			return this->sendfile(buffer, this->_clients[clientFd]);
+			return this->sendfile(buffer, client);
 	case 16:
-			return this->getfile(buffer, this->_clients[clientFd]);
+			return this->getfile(buffer, client);
 	case 17:
-			return this->bot(buffer, this->_clients[clientFd]);
+			return this->notice(buffer, client);
+	case 18:
+			return this->ping(buffer, client);
 	default:
 			return "";
 	}
@@ -188,7 +185,10 @@ void	Server::closeServer()
 	std::vector<std::string> null;
 
 	for (unsigned int i = 1; i < this->getNbClient(); i++)
+	{
+		std::cout << "client[" << i << "] = " << this->_clients[this->_pfds[i].fd]->getNickname() << std::endl;
 		this->quit(null, this->_clients[this->_pfds[i].fd]);
+	}
 	this->_pfds.erase(this->_pfds.begin());
 	close(this->getSocket());
 	std::cout << "\nBye !" << std::endl;

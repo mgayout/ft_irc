@@ -14,31 +14,20 @@
 
 std::string Server::kick(std::vector<std::string> args, Client* client)
 {
-	Client		*target = this->getClientWithNick(args[2]);
-    std::string msg;
+	std::string	msg = this->msgkick(client, args);
 
     if (!client->isAuthenticated())
         return "";
     else if (args.size() < 3)
         return this->msg461(client, args[0]);
-
-    std::string reason = args.size() > 3 ? args[3] : "";
-
-    if (args[1][0] != '#')
-        return this->msg403(client, args[1]);
-    else if (this->_channels.find(args[1]) == this->_channels.end())
-        return this->msg403(client, args[1]);
-    else if (!this->_channels[args[1]]->isOp(client->getNickname()))
+	else if (!this->getChannel(args[1]))
+		return this->msg403(client, args[1]);
+    else if (!this->getChannel(args[1])->isOp(client->getNickname()))
         return this->msg482(client, args[1]);
-    else if (!target || !this->_channels[args[1]]->isMember(target->getNickname()))
-        return this->msg441(client, args[2], args[1]);
-
-    this->_channels[args[1]]->removeMember(target->getNickname());
-    msg += ":" + client->getNickname() + " KICK " + args[1] + " " + args[2];
-    if (!reason.empty()) {
-        msg += " :" + reason;
-    }
-    msg += "\r\n";
-
+    else if (!this->getChannel(args[1])->isMember(args[2])) {
+        return this->msg441(client, args[2], args[1]);}
+	this->sendChannel(args[1], client->getNickname(), msg, false);
+	this->_channels[args[1]]->clearClient(args[2]);
+	this->getClientWithNick(args[2])->removeChannel(args[1]);
     return msg;
 }

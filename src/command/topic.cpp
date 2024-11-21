@@ -14,37 +14,30 @@
 
 std::string Server::topic(std::vector<std::string> args, Client *client)
 {
+	std::string	msg, arg;
+
     if (!client->isAuthenticated())
         return "";
     else if (args.size() < 2)
         return this->msg461(client, "TOPIC");
-
-    std::string channelName = args[1];
-    if (channelName[0] != '#')
-        return this->msg403(client, channelName);
-
-    Channel *channel = this->getChannel(channelName);
-    if (!channel)
-        return this->msg403(client, channelName);
-
-    if (args.size() == 2) {
-        if (channel->getTopic().empty())
-            return this->msg331(client, channelName);
-        else
-            return this->msg332(client, channel) + this->msg333(client, channel);
+    else if (!this->getChannel(args[1]))
+        return this->msg403(client, args[1]);
+    else if (args.size() == 2)
+	{
+        if (!this->getChannel(args[1])->getTopic().size())
+            return this->msg331(client, args[1]);
+        return this->msg332(client, this->getChannel(args[1])) + this->msg333(client, this->getChannel(args[1]));
     }
-
-    std::string newTopic = args[2];
-    if (args.size() > 3) {
-        for (size_t i = 3; i < args.size(); i++) {
-            newTopic += " " + args[i];
-        }
-    }
-
-    if (channel->getT() && !channel->isOp(client->getNickname()))
-        return this->msg482(client, channelName);
-
-    channel->setTopic(newTopic);
-    this->sendChannel(channelName, client->getNickname(), "TOPIC " + channel->getName() + " :" + newTopic, true);
-    return ("TOPIC " + channel->getName() + " :" + newTopic);
+	else
+	{
+		if (this->getChannel(args[1])->getT() && !this->getChannel(args[1])->isOp(client->getNickname()))
+			return this->msg482(client, args[1]);
+		for (unsigned int i = 2; i < args.size(); i++)
+			arg += args[i] + " ";
+		arg.erase(arg.size() - 1, 1);
+		this->getChannel(args[1])->setTopic(arg);
+		msg = this->msgtopic(client, args[1], arg);
+		this->sendChannel(args[1], client->getNickname(), arg, false);
+	}
+    return msg;
 }

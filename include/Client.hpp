@@ -18,14 +18,13 @@
 class	Client
 {
 	public:
-			Client(int socket, struct sockaddr_in sockstruct);
+			Client(int socket);
 			~Client();
 			bool	isAuthenticated();
 			void	addChannel(std::string channel);
 			void	removeChannel(std::string channel);
 
 			const int					&getSocket();
-			const struct sockaddr_in	&getSockstruct();
 			const std::string			&getNickname();
 			const std::string			&getUsername();
 			const std::string			&getRealname();
@@ -47,7 +46,6 @@ class	Client
 
 	private:
 			int							_socket;
-			struct sockaddr_in			_sockstruct;
 			std::string					_nickname;
 			std::string					_username;
 			std::string					_realname;

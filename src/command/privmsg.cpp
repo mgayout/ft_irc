@@ -45,7 +45,7 @@ std::string	Server::privmsgClient(std::string target, std::string message, Clien
 {
 	std::string	msg = this->msgprivmsg(client, target, message);
 
-	if (!this->getClientWithNick(target))
+	if (!this->getClientWithNick(target) || !this->getClientWithNick(target)->isAuthenticated())
 		return "";
 	send(this->getClientWithNick(target)->getSocket(), msg.c_str(), msg.size(), 0);
 	return "";
