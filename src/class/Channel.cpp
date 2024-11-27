@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:14:52 by biaroun           #+#    #+#             */
-/*   Updated: 2024/11/01 16:04:12 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/11/21 19:12:33 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ Channel::Channel(Client *client, std::string name, std::string password)
 	this->_password = password;
 	this->_topic = "";
 	this->_i = false;
-	this->_t = false;
+	this->_t = true;
 	this->_maxClient = 0;
-	this->_date = getCurrentDate();
+	this->_time = getCurrentTime();
     this->addMember(client->getNickname());
 	this->addOp(client->getNickname());
 }

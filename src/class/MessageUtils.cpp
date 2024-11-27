@@ -37,18 +37,30 @@ std::string	Server::msgclientschannel(std::string channel)
 	return msg;
 }
 
-std::string	Server::msgmodechannel(std::string channelname) //to complete
+std::string	Server::msgmodechannel(std::string channelname)
 {
 	Channel *channel = this->getChannel(channelname);
-	std::string msg;
+	std::string mode = " +", arg = "";
 
 	if (channel->getI())
-		msg += "i";
+		mode += "i";
 	if (channel->getT())
-		msg += "t";
+		mode += "t";
 	if (channel->getPassword().size())
-		msg += "k";
+	{
+		mode += "k";
+		arg += channel->getPassword();
+	}
 	if (channel->getMaxClient())
-		msg += "l";
-	return msg;
+	{
+		mode += "l";
+		if (arg.size())
+			arg += " ";
+		arg += channel->getMaxClient();
+	}
+	if (mode.size() == 2)
+		return "";
+	if (!arg.size())
+		return mode;
+	return mode + " " + arg;
 }

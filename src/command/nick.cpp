@@ -31,7 +31,8 @@ std::string	Server::nick(std::vector<std::string> arg, Client *client)
 				return (this->msg001(client) + \
 						this->msg002(client) + \
 						this->msg003(client) + \
-						this->msg004(client));
+						this->msg004(client) + \
+						this->msgping(client));
 		}
 		else
 			return this->msg433(client, arg[1]);

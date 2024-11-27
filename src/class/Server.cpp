@@ -126,12 +126,12 @@ void	Server::clientRequest(unsigned int idClient)
 
 std::string	Server::commands(std::vector<std::string> buffer, Client *client)
 {
-	std::string	commands[19] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "privmsg", "QUIT", "WHO", "WHOIS", "SENDFILE", "GETFILE", "NOTICE", "PING"};
+	std::string	commands[20] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "privmsg", "QUIT", "WHO", "WHOIS", "SENDFILE", "GETFILE", "NOTICE", "PING", "PONG"};
 	int			i = -1;
 
 	for (unsigned int j = 0; j < buffer.size(); j++)
 		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;
-	while (++i < 20)
+	while (++i < 21)
 		if (buffer[0] == commands[i])
 			break ;
 	switch (i)
@@ -174,6 +174,8 @@ std::string	Server::commands(std::vector<std::string> buffer, Client *client)
 			return this->notice(buffer, client);
 	case 18:
 			return this->ping(buffer, client);
+	case 19:
+			return this->pong(buffer, client);
 	default:
 			return "";
 	}

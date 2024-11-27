@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:13:42 by biaroun           #+#    #+#             */
-/*   Updated: 2024/11/01 15:58:44 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/11/21 18:33:28 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class	Channel
 			const std::string			&getTopic();
 			const std::string			&getTopicUser();
 			const std::string			&getTopicTime();
-			const std::string			&getDate();
+			const std::string			&getTime();
 			const bool					&getI();
 			const bool					&getT();
 			const unsigned int			&getMaxClient();
@@ -65,7 +65,7 @@ class	Channel
 			std::string						_topic;
 			std::string						_topicUser;
 			std::string						_topicTime;
-			std::string						_date;
+			std::string						_time;
             bool        					_i;
 			bool							_t;
             unsigned int					_maxClient;

@@ -19,6 +19,32 @@ std::string	Server::cap(Client *client)
 	return "";
 }
 
+std::string	Server::ping(std::vector<std::string> arg, Client *client)
+{
+	if (!client->isAuthenticated())
+        return "";
+	if (arg.size() != 2)
+		return "";
+	return this->msgpong(client, arg[1]);
+}
+
+std::string	Server::pong(std::vector<std::string> arg, Client *client)
+{
+	std::string message;
+
+	if (!client->isAuthenticated())
+        return "";
+	else if (arg.size() != 2)
+		return "";
+	message = arg[1].erase(0, 1);
+	if (client->getPing() && message == client->getNickname())
+	{
+		client->setLastPing(std::time(NULL));
+		client->setPing(false);
+	}
+	return "";
+}
+
 std::string	Server::who(std::vector<std::string> arg, Client *client)
 {
 	std::string	msg;

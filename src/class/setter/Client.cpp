@@ -20,3 +20,5 @@ void	Client::setNick(bool b) {this->_nick = b;}
 void	Client::setUser(bool b) {this->_user = b;}
 void	Client::setReal(bool b) {this->_real = b;}
 void	Client::setHexchat(bool b) {this->_hexchat = b;}
+void	Client::setPing(bool b) {this->_ping = b;}
+void	Client::setLastPing(std::time_t t) {this->_lastping = t;}

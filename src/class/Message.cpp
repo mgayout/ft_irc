@@ -66,12 +66,12 @@ std::string	Server::msg319(Client *client, std::string target) {
 }
 
 std::string	Server::msg324(Client *client, std::string channel) {
-	std::string	msg = this->getServerPrefix(client, "324") + channel + " " + this->msgmodechannel(channel) + "\r\n";
+	std::string	msg = this->getServerPrefix(client, "324") + channel + this->msgmodechannel(channel) + "\r\n";
 	return msg;
 }
 
 std::string	Server::msg329(Client *client, Channel *channel) {
-	std::string	msg = this->getServerPrefix(client, "329") + channel->getName() + " " + channel->getTopic() + " " + channel->getDate() + "\r\n";
+	std::string	msg = this->getServerPrefix(client, "329") + channel->getName() + " " + channel->getTopic() + " " + channel->getTime() + "\r\n";
 	return msg;
 }
 
@@ -101,9 +101,9 @@ std::string	Server::msg352(Client *client, std::string target)
 		{
 			Client	*clientTarget = this->getClientWithNick(channelTarget->getMembers()[i]);
 			if (channelTarget->isOp(channelTarget->getMembers()[i]))
-				msg += this->getServerPrefix(client, "352") + channelTarget->getName() + " " + clientTarget->getUsername() + " " + clientTarget->getNickname() + " H@ :0 " + clientTarget->getRealname() + "\r\n";
+				msg += this->getServerPrefix(client, "352") + channelTarget->getName() + " " + clientTarget->getUsername() + " " + this->getHostname() + " " + this->getHostname() + " " + clientTarget->getNickname() + " H@ :0 " + clientTarget->getRealname() + "\r\n";
 			else
-				msg += this->getServerPrefix(client, "352") + channelTarget->getName() + " " + clientTarget->getUsername() + " " + clientTarget->getNickname() + " H :0 " + clientTarget->getRealname() + "\r\n";
+				msg += this->getServerPrefix(client, "352") + channelTarget->getName() + " " + clientTarget->getUsername() + " " + this->getHostname() + " " + this->getHostname() + " " + clientTarget->getNickname() + " H :0 " + clientTarget->getRealname() + "\r\n";
 		}
 	}
 	else
@@ -277,8 +277,16 @@ std::string	Server::msgtopic(Client *client, std::string channel, std::string me
 	return msg;
 }
 
-std::string	Server::msgping(Client *client, std::string pingValue) {
+std::string	Server::msgping(Client *client) {
 	std::string msg;
-	msg = this->getUserPrefix(client) + "PONG " + pingValue + "\r\n";
+
+	client->setPing(true);
+	msg = ":" + this->getHostname() + " PING :" + client->getNickname() + "\r\n";
+	return msg;
+}
+
+std::string	Server::msgpong(Client *client, std::string message) {
+	std::string msg;
+	msg = this->getUserPrefix(client) + "PONG :" + message + "\r\n";
 	return msg;
 }

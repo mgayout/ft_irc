@@ -12,6 +12,21 @@
 
 #include "../include/Server.hpp"
 
+template <typename T>
+std::string	itoa(T value)
+{
+	std::ostringstream oss;
+	oss << value;
+	return oss.str();
+}
+
+std::string	getCurrentTime()
+{
+ 	std::time_t time;
+	std::time(&time);
+    return (itoa(time));
+}
+
 std::string	getCurrentDate()
 {
 	std::time_t	now = std::time(NULL);

@@ -21,14 +21,16 @@ std::string	Server::user(std::vector<std::string> arg, Client *client)
 		if (client->isAuthenticated())
 			return this->msg462(client);
 		client->setUsername(arg[1]);
-		client->setRealname(arg[4]);
 		client->setUser(true);
+		client->setRealname(&arg[4][1]);
+		std::cout << client->getRealname() << std::endl;
 		client->setReal(true);
 		if (client->isAuthenticated())
 			return (this->msg001(client) + \
 					this->msg002(client) + \
 					this->msg003(client) + \
-					this->msg004(client));
+					this->msg004(client) + \
+					this->msgping(client));
 	}
 	else
 		return this->msg461(client, arg[0]);

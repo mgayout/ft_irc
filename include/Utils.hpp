@@ -32,6 +32,10 @@
 
 extern volatile sig_atomic_t ctrl;
 
+template <typename T>
+std::string					itoa(T value);
+
+std::string					getCurrentTime();
 void						handleSignal(int signal);
 std::string					getCurrentDate();
 std::string					trim(const std::string& str);

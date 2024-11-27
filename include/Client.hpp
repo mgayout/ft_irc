@@ -33,6 +33,8 @@ class	Client
 			const bool					&getUser();
 			const bool					&getReal();
 			const bool					&getHexchat();
+			const bool					&getPing();
+			const std::time_t			&getLastPing();
 			std::vector<std::string>	getChannel();
 
 			void						setNickname(const std::string nick);
@@ -43,6 +45,8 @@ class	Client
 			void						setUser(bool b);
 			void						setReal(bool b);
 			void						setHexchat(bool b);
+			void						setPing(bool b);
+			void						setLastPing(std::time_t t);
 
 	private:
 			int							_socket;
@@ -54,6 +58,8 @@ class	Client
 			bool						_user;
 			bool						_real;
 			bool						_hexchat;
+			bool						_ping;
+			std::time_t					_lastping;
 			std::vector<std::string>	_channels;
 };
 

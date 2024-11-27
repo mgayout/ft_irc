@@ -72,6 +72,7 @@ class	Server
 			int									_socket;
 			struct sockaddr_in					_sockstruct;
 			std::map<std::string, Channel *>	_channels;
+			bool								_ping;
 };
 
 #endif

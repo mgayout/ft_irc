@@ -17,7 +17,7 @@ const std::string			&Channel::getPassword() {return this->_password;}
 const std::string			&Channel::getTopic() {return this->_topic;}
 const std::string			&Channel::getTopicUser() {return this->_topicUser;}
 const std::string			&Channel::getTopicTime() {return this->_topicTime;}
-const std::string			&Channel::getDate() {return this->_date;}
+const std::string			&Channel::getTime() {return this->_time;}
 const bool					&Channel::getI() {return this->_i;}
 const bool					&Channel::getT() {return this->_t;}
 const unsigned int			&Channel::getMaxClient() {return this->_maxClient;}
