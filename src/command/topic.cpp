@@ -30,7 +30,7 @@ std::string Server::topic(std::vector<std::string> args, Client *client)
     }
 	else
 	{
-		if (this->getChannel(args[1])->getT() && !this->getChannel(args[1])->isOp(client->getNickname()))
+		if (!this->getChannel(args[1])->getT() && !this->getChannel(args[1])->isOp(client->getNickname()))
 			return this->msg482(client, args[1]);
 		for (unsigned int i = 2; i < args.size(); i++)
 			arg += args[i] + " ";

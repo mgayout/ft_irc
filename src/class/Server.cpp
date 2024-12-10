@@ -110,15 +110,23 @@ void	Server::clientRequest(unsigned int idClient)
 	{
 		buffer[bytes_received] = '\0';
 		buf = buffer;
-		cmd = split(buffer, '\n', this->_clients[clientFd]->getHexchat());
-		for (unsigned int i = 0; i < cmd.size(); i++)
+		if (buf[bytes_received - 1] == '\n')
 		{
-			std::cout << "cmd[" << i << "] = " << cmd[i] << std::endl;
-			msg = this->commands(split(cmd[i], ' ', this->_clients[clientFd]->getHexchat()), this->_clients[clientFd]);
-			if (msg.size())
-				send(clientFd, msg.c_str(), msg.size(), 0);
-			std::cout << msg << std::endl;
+			cmd = split(buffer, '\n', this->_clients[clientFd]->getHexchat());
+			if (this->_buffer.size())
+				cmd = this->addBuffer(cmd);
+			for (unsigned int i = 0; i < cmd.size(); i++)
+			{
+				std::cout << "cmd[" << i << "] = " << cmd[i] << std::endl;
+				msg = this->commands(split(cmd[i], ' ', this->_clients[clientFd]->getHexchat()), this->_clients[clientFd]);
+				if (msg.size())
+					send(clientFd, msg.c_str(), msg.size(), 0);
+				std::cout << msg << std::endl;
+				this->_buffer.clear();
+			}
 		}
+		else
+			this->_buffer.push_back(buf);
 	}
 	else
 		throw (Server::RecvError());

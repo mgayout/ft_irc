@@ -53,6 +53,7 @@ class	Server
 			void						sendChannel(std::string channelname, std::string sender, std::string message, bool sendme);
 			void						sendAll(std::string username, std::string msg);
 			void						removeChannel(std::string channel);
+			std::vector<std::string>	addBuffer(std::vector<std::string> cmd);
 
 			# include "Command.hpp"
 			# include "Message.hpp"
@@ -73,6 +74,7 @@ class	Server
 			struct sockaddr_in					_sockstruct;
 			std::map<std::string, Channel *>	_channels;
 			bool								_ping;
+			std::vector<std::string>			_buffer;
 };
 
 #endif

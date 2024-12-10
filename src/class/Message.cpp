@@ -260,13 +260,16 @@ std::string	Server::msgquit(Client *client, std::vector<std::string> arg) {
 }
 
 std::string	Server::msgkick(Client *client, std::vector<std::string> arg) {
-	std::string msg;
+	std::string msg = "";
 	
 	for (unsigned int i = 3; i < arg.size(); i++)
 		msg += arg[i] + " ";
 	if (msg.size())
 		msg.erase(msg.size() - 1, 1);
-	msg = this->getUserPrefix(client) + "KICK " + arg[1] + " " + arg[2] + " " + msg + "\r\n";
+	if (msg.size())
+		msg = this->getUserPrefix(client) + "KICK " + arg[1] + " " + arg[2] + " " + msg + "\r\n";
+	else
+		msg = this->getUserPrefix(client) + "KICK " + arg[1] + " " + arg[2] + " " + client->getNickname() + "\r\n";
 	return msg;
 }
 
