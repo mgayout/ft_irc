@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 14:18:12 by mgayout           #+#    #+#             */
-/*   Updated: 2024/12/10 12:27:24 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/12/10 12:52:50 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ std::vector<std::string>	Server::addBuffer(std::vector<std::string> cmd)
 	std::string	buf = "";
 	for (unsigned int i = 0; i != this->_buffer.size(); i++)
 		buf += this->_buffer[i];
+	this->_buffer.clear();
 	cmd[0] = buf + cmd[0];
 	return cmd;
 }

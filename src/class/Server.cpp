@@ -117,12 +117,11 @@ void	Server::clientRequest(unsigned int idClient)
 				cmd = this->addBuffer(cmd);
 			for (unsigned int i = 0; i < cmd.size(); i++)
 			{
-				std::cout << "cmd[" << i << "] = " << cmd[i] << std::endl;
+				//std::cout << "cmd[" << i << "] = " << cmd[i] << std::endl;
 				msg = this->commands(split(cmd[i], ' ', this->_clients[clientFd]->getHexchat()), this->_clients[clientFd]);
 				if (msg.size())
 					send(clientFd, msg.c_str(), msg.size(), 0);
 				std::cout << msg << std::endl;
-				this->_buffer.clear();
 			}
 		}
 		else
@@ -137,8 +136,8 @@ std::string	Server::commands(std::vector<std::string> buffer, Client *client)
 	std::string	commands[19] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "privmsg", "QUIT", "WHO", "WHOIS", "SENDFILE", "GETFILE", "PING", "PONG"};
 	int			i = -1;
 
-	for (unsigned int j = 0; j != buffer.size(); j++)
-		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;
+	/*for (unsigned int j = 0; j != buffer.size(); j++)
+		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;*/
 	while (++i < 20)
 		if (buffer[0] == commands[i])
 			break ;
