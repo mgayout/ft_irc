@@ -14,7 +14,7 @@
 
 std::string	Server::pass(std::vector<std::string> arg, Client *client)
 {
-	if (arg[1].size())
+	if (arg.size() == 2)
 	{
 		if (client->getPwd())
 			return this->msg462(client);

@@ -16,14 +16,13 @@ std::string	Server::user(std::vector<std::string> arg, Client *client)
 {
 	if (!client->getPwd())
 		return this->msg451(client, arg[0]);
-	if (arg[1].size() != 5)
+	if (arg.size() == 5)
 	{
 		if (client->isAuthenticated())
 			return this->msg462(client);
 		client->setUsername(arg[1]);
 		client->setUser(true);
 		client->setRealname(&arg[4][1]);
-		std::cout << client->getRealname() << std::endl;
 		client->setReal(true);
 		if (client->isAuthenticated())
 			return (this->msg001(client) + \

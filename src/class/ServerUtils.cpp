@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 14:18:12 by mgayout           #+#    #+#             */
-/*   Updated: 2024/11/19 17:56:10 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/12/10 10:01:53 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,8 @@ void	Server::sendChannel(std::string channelname, std::string sender, std::strin
 	Channel	*channel = getChannel(channelname);
 
 	for (unsigned int i = 0; i < channel->getMembers().size(); i++)
-	{
-		std::cout << "member [" << i << "] = " << channel->getMembers()[i] << std::endl;
 		if (sendme || (!sendme && channel->getMembers()[i] != sender))
 			send(this->getClientWithNick(channel->getMembers()[i])->getSocket(), message.c_str(), message.size(), 0);
-	}
 }
 
 void	Server::sendAll(std::string username, std::string msg)

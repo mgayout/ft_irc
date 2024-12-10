@@ -52,8 +52,6 @@ std::string		bot(std::vector<std::string> arg, Client *client);
 std::string		who(std::vector<std::string> arg, Client *client);
 std::string		whois(std::vector<std::string> arg, Client *client);
 
-std::string		notice(std::vector<std::string> arg, Client *client);
-
 std::string		ping(std::vector<std::string> arg, Client* client);
 std::string		pong(std::vector<std::string> arg, Client* client);
 

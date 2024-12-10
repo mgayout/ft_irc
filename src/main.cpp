@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 08:08:07 by mgayout           #+#    #+#             */
-/*   Updated: 2024/10/22 17:17:10 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/12/10 09:59:29 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,6 @@ int	main(int argc, char **argv)
 
 void	handleSignal(int signal)
 {
-	if (signal == SIGINT)
+	if (signal == SIGINT || signal == SIGQUIT)
 		ctrl++;
 }

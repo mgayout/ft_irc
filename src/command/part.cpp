@@ -24,7 +24,8 @@ std::string	Server::part(std::vector<std::string> args, Client *client)
 		return this->msg461(client, args[0]);
 	channel = split(args[1], ',', false);
 	for (unsigned int i = 2; i < args.size(); i++)
-		message += args[i] + " "; //erase last " ";
+		message += args[i] + " ";
+	message.erase(message.size() - 1, 1);
 	for (unsigned int i = 0; i < channel.size(); i++)
 	{
 		target = this->getChannel(channel[i]);

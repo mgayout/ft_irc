@@ -14,7 +14,7 @@
 
 std::string Server::kick(std::vector<std::string> args, Client* client)
 {
-	std::string	msg = this->msgkick(client, args);
+	std::string	msg;
 
     if (!client->isAuthenticated())
         return "";
@@ -26,6 +26,7 @@ std::string Server::kick(std::vector<std::string> args, Client* client)
         return this->msg482(client, args[1]);
     else if (!this->getChannel(args[1])->isMember(args[2])) {
         return this->msg441(client, args[2], args[1]);}
+	msg = this->msgkick(client, args);
 	this->sendChannel(args[1], client->getNickname(), msg, false);
 	this->_channels[args[1]]->clearClient(args[2]);
 	this->getClientWithNick(args[2])->removeChannel(args[1]);

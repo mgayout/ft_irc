@@ -37,7 +37,7 @@ std::string Server::topic(std::vector<std::string> args, Client *client)
 		arg.erase(arg.size() - 1, 1);
 		this->getChannel(args[1])->setTopic(arg);
 		msg = this->msgtopic(client, args[1], arg);
-		this->sendChannel(args[1], client->getNickname(), arg, false);
+		this->sendChannel(args[1], client->getNickname(), msg, false);
 	}
     return msg;
 }

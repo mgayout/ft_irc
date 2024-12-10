@@ -126,12 +126,12 @@ void	Server::clientRequest(unsigned int idClient)
 
 std::string	Server::commands(std::vector<std::string> buffer, Client *client)
 {
-	std::string	commands[20] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "privmsg", "QUIT", "WHO", "WHOIS", "SENDFILE", "GETFILE", "NOTICE", "PING", "PONG"};
+	std::string	commands[19] = {"JOIN", "PART", "KICK", "INVITE", "TOPIC", "MODE", "CAP", "PASS", "NICK", "USER", "PRIVMSG", "privmsg", "QUIT", "WHO", "WHOIS", "SENDFILE", "GETFILE", "PING", "PONG"};
 	int			i = -1;
 
-	for (unsigned int j = 0; j < buffer.size(); j++)
+	for (unsigned int j = 0; j != buffer.size(); j++)
 		std::cout << "buffer[" << j << "] = " << buffer[j] << std::endl;
-	while (++i < 21)
+	while (++i < 20)
 		if (buffer[0] == commands[i])
 			break ;
 	switch (i)
@@ -171,10 +171,8 @@ std::string	Server::commands(std::vector<std::string> buffer, Client *client)
 	case 16:
 			return this->getfile(buffer, client);
 	case 17:
-			return this->notice(buffer, client);
-	case 18:
 			return this->ping(buffer, client);
-	case 19:
+	case 18:
 			return this->pong(buffer, client);
 	default:
 			return "";
@@ -188,7 +186,7 @@ void	Server::closeServer()
 
 	for (unsigned int i = 1; i < this->getNbClient(); i++)
 	{
-		std::cout << "client[" << i << "] = " << this->_clients[this->_pfds[i].fd]->getNickname() << std::endl;
+		//std::cout << "client[" << i << "] = " << this->_clients[this->_pfds[i].fd]->getNickname() << std::endl;
 		this->quit(null, this->_clients[this->_pfds[i].fd]);
 	}
 	this->_pfds.erase(this->_pfds.begin());

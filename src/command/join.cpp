@@ -14,13 +14,14 @@
 
 std::string	Server::join(std::vector<std::string> arg, Client *client)
 {
-	std::vector<std::string>	args = split(arg[1], ',', false);
+	std::vector<std::string>	args;
 	std::string					channel, password, msg;
 
 	if (!client->isAuthenticated())
 		return "";
 	else if (arg.size() == 1)
 		return this->msg461(client, arg[0]);
+	args = split(arg[1], ',', false);
 	while (args.size())
 	{
 		channel = args[0];
@@ -42,8 +43,6 @@ std::string	Server::join(std::vector<std::string> arg, Client *client)
 			msg += this->joinChannel(channel, password, client);
 		if (!this->getChannel(channel)->isMember(client->getNickname()))
 			continue;
-		if (this->_channels[channel] && this->_channels[channel]->getTopic() != "")
-			msg += this->msg332(client, this->_channels[channel]) + this->msg333(client, this->_channels[channel]);
 		msg += this->msg353(client, channel) + this->msg366(client, channel);
 	}
 	return msg;

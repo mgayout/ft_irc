@@ -246,7 +246,6 @@ std::string	Server::msgpart(Client *client, std::string channel, std::string mes
 
 std::string Server::msgprivmsg(Client *client, std::string target, std::string message) {
 	std::string	msg = this->getUserPrefix(client) + "PRIVMSG " + target + " " + message + "\n\r";
-	std::cout << "privmsg = " << msg << std::endl;
 	return msg;
 }
 
@@ -267,7 +266,7 @@ std::string	Server::msgkick(Client *client, std::vector<std::string> arg) {
 		msg += arg[i] + " ";
 	if (msg.size())
 		msg.erase(msg.size() - 1, 1);
-	msg = this->getUserPrefix(client) + "KICK " + arg[1] + " " + arg[2] + msg + "\r\n";
+	msg = this->getUserPrefix(client) + "KICK " + arg[1] + " " + arg[2] + " " + msg + "\r\n";
 	return msg;
 }
 

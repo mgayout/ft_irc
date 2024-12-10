@@ -6,7 +6,7 @@
 /*   By: mgayout <mgayout@student.42nice.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 14:14:52 by biaroun           #+#    #+#             */
-/*   Updated: 2024/11/21 19:12:33 by mgayout          ###   ########.fr       */
+/*   Updated: 2024/12/10 10:01:01 by mgayout          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,10 +96,7 @@ void	Channel::removeMember(std::string nickname)
 void	Channel::clearOp()
 {
 	for (unsigned int i = 0; i < this->_op.size(); i++)
-	{
-		std::cout << i << std::endl;
 		this->_op.erase(this->_op.begin() + i);
-	}
 }
 
 void	Channel::clearInvited()

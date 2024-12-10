@@ -16,7 +16,7 @@ std::string	Server::nick(std::vector<std::string> arg, Client *client)
 {
 	if (!client->getPwd())
 		return this->msg451(client, arg[0]);
-	if (arg[1].size())
+	if (arg.size() == 2)
 	{
 		if (client->isAuthenticated())
 			return this->msg462(client);
